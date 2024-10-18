@@ -35,4 +35,8 @@ export const POST = async (req: NextRequest) => {
       { status: 404 }
     );
   }
+
+  return NextResponse.json({ message: '' });
+
+  // login
 };

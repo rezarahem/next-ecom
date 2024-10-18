@@ -31,5 +31,5 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
-  return NextResponse.json({ message: 'کد تایید ارسال شد', statusCode: 200 });
+  return NextResponse.json({ message: 'کد تایید ارسال شد' });
 };

@@ -11,6 +11,7 @@ type Error = {
 
 export const handleError = (e: Error) => {
   const { message } = e.response.data;
+  
   if (!process.env.NEXT_PUBLIC_PRODUCTION) {
     console.log(e);
   }

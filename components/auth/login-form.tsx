@@ -11,12 +11,14 @@ import {
 } from '@/components/ui/input-otp';
 import { handleError } from '@/lib/handle-error';
 import toast from 'react-hot-toast';
-import { PhoneNumberSchema, UserRegisterSchema } from '@/zod/zod';
 import axios from 'axios';
+import { OtpSchema, PhoneNumberSchema, UserRegisterSchema } from '@/zod/zod';
 
 type BackendResType = {
-  message: string;
-  statusCode: number;
+  data: {
+    message: string;
+  };
+  status: number;
 };
 
 type ActiveTempTypes = 'phoneNumber' | 'userName' | 'otpNumber';
@@ -60,21 +62,19 @@ const LoginForm = () => {
           setError(verifiedFields.error);
         }
 
-        const data = await axios.post(
+        const { data, status } = (await axios.post(
           `${process.env.NEXT_PUBLIC_API}/auth/check-phone`,
           verifiedFields.data
-        );
+        )) as BackendResType;
 
-        const { statusCode, message } = data.data as BackendResType;
-
-        switch (statusCode) {
+        switch (status) {
           case 200:
             setActiveTemp('otpNumber');
-            toast.success(message);
+            toast.success(data.message);
             break;
           case 204:
             setActiveTemp('userName');
-            toast.success(message);
+            toast.success(data.message);
             break;
         }
       } catch (error) {
@@ -93,17 +93,15 @@ const LoginForm = () => {
         setError(verifiedFields.error);
       }
 
-      const data = await axios.post(
+      const { data, status } = await axios.post(
         `${process.env.NEXT_PUBLIC_API}/auth/register`,
         verifiedFields.data
       );
 
-      const { statusCode, message } = data.data as BackendResType;
-
-      switch (statusCode) {
+      switch (status) {
         case 200:
           setActiveTemp('otpNumber');
-          toast.success(message);
+          toast.success(data.message);
           break;
       }
       try {
@@ -112,7 +110,33 @@ const LoginForm = () => {
       }
     });
   };
-  const onVerification = () => {};
+  const onVerification = () => {
+    startTransition(async () => {
+      const verifiedFields = OtpSchema.safeParse({
+        otp: toEnglishNumberStr(userOtpNumber),
+      });
+      if (!verifiedFields.success) {
+        setError(verifiedFields.error);
+      }
+
+      const { data, status } = await axios.post(
+        `${process.env.NEXT_PUBLIC_API}/auth/verify-otp`,
+        verifiedFields.data
+      );
+
+      switch (status) {
+        case 200:
+          setActiveTemp('otpNumber');
+          toast.success(data.message);
+          break;
+      }
+
+      try {
+      } catch (error) {
+        handleError(error as any);
+      }
+    });
+  };
 
   ////////////////////////////////////////////////
   const loginInput = () => {

@@ -28,7 +28,6 @@ export const POST = async (req: NextRequest) => {
   if (!user) {
     return NextResponse.json({
       message: 'برای ورود ثبت نام کنید',
-      statusCode: 204,
     });
   }
 
@@ -41,5 +40,5 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
-  return NextResponse.json({ message: 'کد تایید ارسال شد', statusCode: 200 });
+  return NextResponse.json({ message: 'کد تایید ارسال شد' });
 };
