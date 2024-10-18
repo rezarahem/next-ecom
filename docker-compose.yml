@@ -1,0 +1,16 @@
+# version: '3.8'
+
+services:
+  db:
+    image: postgres
+    container_name: next-db
+    environment:
+      POSTGRES_USER: next
+      POSTGRES_PASSWORD: next
+      POSTGRES_DB: next
+    ports:
+      - '6000:5432'
+    volumes:
+      - my_dbdata:/var/lib/postgresql/data
+volumes:
+  my_dbdata:
