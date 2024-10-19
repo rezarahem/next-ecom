@@ -16,7 +16,7 @@ export const POST = async (req: NextRequest) => {
 
   const otp = generateOtp();
 
-  db.insert(User).values({
+  await db.insert(User).values({
     phoneNumber: verifiedFields.data.phoneNumber,
     name: verifiedFields.data.userName,
     otp,
@@ -31,5 +31,5 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
-  return NextResponse.json({ message: 'کد تایید ارسال شد' });
+  return NextResponse.json({ message: 'کد تایید ارسال شد' }, { status: 201 });
 };

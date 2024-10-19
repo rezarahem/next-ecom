@@ -24,7 +24,7 @@ type BackendResType = {
 type ActiveTempTypes = 'phoneNumber' | 'userName' | 'otpNumber';
 
 const LoginForm = () => {
-  const [activeTemp, setActiveTemp] = useState<ActiveTempTypes>('phoneNumber');
+  const [activeTemp, setActiveTemp] = useState<ActiveTempTypes>('otpNumber');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [userName, setUserName] = useState('');
   const [userOtpNumber, setUserOtpNumber] = useState('');
@@ -60,6 +60,7 @@ const LoginForm = () => {
 
         if (!verifiedFields.success) {
           setError(verifiedFields.error);
+          return;
         }
 
         const { data, status } = (await axios.post(
@@ -72,7 +73,7 @@ const LoginForm = () => {
             setActiveTemp('otpNumber');
             toast.success(data.message);
             break;
-          case 204:
+          case 202:
             setActiveTemp('userName');
             toast.success(data.message);
             break;
@@ -91,6 +92,7 @@ const LoginForm = () => {
 
       if (!verifiedFields.success) {
         setError(verifiedFields.error);
+        return;
       }
 
       const { data, status } = await axios.post(
@@ -99,7 +101,7 @@ const LoginForm = () => {
       );
 
       switch (status) {
-        case 200:
+        case 201:
           setActiveTemp('otpNumber');
           toast.success(data.message);
           break;
@@ -114,9 +116,12 @@ const LoginForm = () => {
     startTransition(async () => {
       const verifiedFields = OtpSchema.safeParse({
         otp: toEnglishNumberStr(userOtpNumber),
+        phoneNumber: toEnglishNumberStr(phoneNumber),
       });
+
       if (!verifiedFields.success) {
         setError(verifiedFields.error);
+        return;
       }
 
       const { data, status } = await axios.post(
@@ -126,7 +131,6 @@ const LoginForm = () => {
 
       switch (status) {
         case 200:
-          setActiveTemp('otpNumber');
           toast.success(data.message);
           break;
       }
@@ -173,6 +177,7 @@ const LoginForm = () => {
         return (
           <div>
             <InputOTP
+              containerClassName='justify-between'
               pattern={regexOnlyDigits}
               maxLength={5}
               value={userOtpNumber}
@@ -231,7 +236,7 @@ const LoginForm = () => {
 
   return (
     <div className='w-full space-y-4 p-5'>
-      <div className='relative mx-auto max-w-96'>
+      <div className='relative mx-auto max-w-96 '>
         <p className='mb-10 text-sm text-muted-foreground'>{formLabel()}</p>
         <span className='absolute right-[3px] top-10 text-xs text-red-500'>
           {inputError}

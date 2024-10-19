@@ -26,9 +26,12 @@ export const POST = async (req: NextRequest) => {
     .returning();
 
   if (!user) {
-    return NextResponse.json({
-      message: 'برای ورود ثبت نام کنید',
-    });
+    return NextResponse.json(
+      {
+        message: 'برای ورود ثبت نام کنید',
+      },
+      { status: 202 }
+    );
   }
 
   const res = await sendOtp(verifiedFields.data.phoneNumber, otp);
