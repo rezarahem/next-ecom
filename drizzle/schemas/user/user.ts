@@ -6,7 +6,7 @@ export const User = pgTable('user', {
   phoneNumber: varchar({ length: 16 }).unique().notNull(),
   image: varchar({ length: 1024 }),
   otp: varchar({ length: 5 }),
-  // lastOtpAttempt: varchar({ length: 50 }),
+  lastOtpAttempt: varchar({ length: 50 }),
   // createdAt: timestamp().notNull(),
   // updatedAt: timestamp().notNull(),
 });

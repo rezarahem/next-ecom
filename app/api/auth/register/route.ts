@@ -1,5 +1,6 @@
 import { db } from '@/drizzle/db';
 import { User } from '@/drizzle/drizzle';
+import { utcUnix } from '@/lib/date';
 import { generateOtp } from '@/lib/generate-otp';
 import { sendOtp } from '@/lib/send-otp';
 import { UserRegisterSchema } from '@/zod/zod';
@@ -20,6 +21,7 @@ export const POST = async (req: NextRequest) => {
     phoneNumber: verifiedFields.data.phoneNumber,
     name: verifiedFields.data.userName,
     otp,
+    lastOtpAttempt: utcUnix(),
   });
 
   const res = await sendOtp(verifiedFields.data.phoneNumber, otp);
@@ -31,5 +33,8 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
-  return NextResponse.json({ message: 'کد تایید ارسال شد' }, { status: 201 });
+  return NextResponse.json(
+    { message: 'کد تایید ارسال شد', otpAge: 180 },
+    { status: 201 }
+  );
 };

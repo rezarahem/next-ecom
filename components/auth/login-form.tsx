@@ -14,10 +14,13 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { OtpSchema, PhoneNumberSchema, UserRegisterSchema } from '@/zod/zod';
 import { useRouter } from 'next/navigation';
+// import type { ChangeEvent } from 'react';
+import { useCountdown } from 'usehooks-ts';
 
 type BackendResType = {
   data: {
     message: string;
+    otpAge: number;
   };
   status: number;
 };
@@ -31,6 +34,16 @@ const LoginForm = () => {
   const [userOtpNumber, setUserOtpNumber] = useState('');
   const [inputError, setInputError] = useState('');
   const [isPending, startTransition] = useTransition();
+  const [otpAge, setOtpAge] = useState(0);
+  const [count, { startCountdown, stopCountdown, resetCountdown }] =
+    useCountdown({
+      countStart: otpAge,
+      intervalMs: 1000,
+    });
+  // const handleChangeIntervalValue = (event: ChangeEvent<HTMLInputElement>) => {
+  //   setIntervalValue(Number(event.target.value));
+  // };
+
   const router = useRouter();
 
   ////////////////////////////////////////////////
@@ -38,45 +51,6 @@ const LoginForm = () => {
   const setError = (e: any) => {
     setInputError(e.errors[0].message);
   };
-
-  // const onVerification = useCallback(() => {
-  //   try {
-  //     startTransition(async () => {
-  //       const validatedPhoneNumber = PhoneNumberSchema.safeParse(
-  //         toEnglishNumberStr(phoneNumber),
-  //       );
-
-  //       if (!validatedPhoneNumber.success) {
-  //         toast.error('خطایی رخ داد، مجددا تلاش کنید');
-  //         setActiveTemp('phoneNumber');
-  //         return;
-  //       }
-
-  //       const validatedOtp = OtpSchema.safeParse(
-  //         toEnglishNumberStr(userOtpNumber),
-  //       );
-
-  //       if (!validatedOtp.success) {
-  //         setInputError(validatedOtp.error.errors[0].message);
-  //         return;
-  //       }
-
-  //       const res = await OtpVerification(
-  //         validatedPhoneNumber.data,
-  //         validatedOtp.data,
-  //       );
-
-  //       if (res.success) {
-  //         toast.success('ورود موفق');
-  //         router.push('/');
-  //       } else {
-  //         toast.error(res?.errorMessage || 'اختلال در شبکه، مجددا تلاش کنید');
-  //       }
-  //     });
-  //   } catch (error) {
-  //     toast.error('خطایی رخ داد، مجددا تلاش کنید');
-  //   }
-  // }, [userOtpNumber, phoneNumber, router]);
 
   const handleSubmit = () => {
     switch (activeTemp) {
@@ -111,6 +85,7 @@ const LoginForm = () => {
 
         switch (status) {
           case 200:
+            setOtpAge(data.otpAge);
             setActiveTemp('otpNumber');
             toast.success(data.message);
             break;
@@ -155,7 +130,7 @@ const LoginForm = () => {
     });
   };
 
-  const onVerification = useCallback(() => {
+  const onVerification = () => {
     startTransition(async () => {
       try {
         const verifiedFields = OtpSchema.safeParse({
@@ -183,7 +158,21 @@ const LoginForm = () => {
         handleError(error as any);
       }
     });
-  }, [userOtpNumber, phoneNumber, router]);
+  };
+
+  const convertToMins = () => {
+    const minutes = String(Math.floor(count / 60)).padStart(2, '0');
+    const seconds = String(count % 60).padStart(2, '0');
+
+    return (
+      <div className='flex gap-1 text-sm text-muted-foreground'>
+        <div>
+          <span>{minutes}</span>:<span>{seconds}</span>
+        </div>
+        <p>تا پایان اعتبار کد تایید</p>
+      </div>
+    );
+  };
 
   useEffect(() => {
     if (userOtpNumber.length === 5) {
@@ -191,6 +180,17 @@ const LoginForm = () => {
     }
   }, [userOtpNumber, onVerification]);
 
+  useEffect(() => {
+    resetCountdown();
+    startCountdown();
+  }, [otpAge, resetCountdown, startCountdown, activeTemp]);
+
+  useEffect(() => {
+    if (count === 0) {
+      stopCountdown();
+      setActiveTemp('phoneNumber');
+    }
+  }, [count, setActiveTemp]);
   ////////////////////////////////////////////////
   const loginInput = () => {
     switch (activeTemp) {
@@ -224,7 +224,7 @@ const LoginForm = () => {
 
       case 'otpNumber':
         return (
-          <div>
+          <div className='relative'>
             <InputOTP
               containerClassName='justify-between'
               pattern={regexOnlyDigits}
@@ -254,6 +254,9 @@ const LoginForm = () => {
                 <InputOTPSlot index={0} />
               </InputOTPGroup>
             </InputOTP>
+            <span className='absolute top-12 right-[3px]'>
+              {convertToMins()}
+            </span>
           </div>
         );
     }

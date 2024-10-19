@@ -1,10 +1,25 @@
 import { db } from '@/drizzle/db';
 import { User } from '@/drizzle/drizzle';
+import { utcDate, utcUnix } from '@/lib/date';
 import { generateOtp } from '@/lib/generate-otp';
 import { sendOtp } from '@/lib/send-otp';
 import { PhoneNumberSchema } from '@/zod/zod';
 import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
+
+const DIF = 180;
+
+const differenceInSecondsToNow = (dbTimestamp: string | null) => {
+  if (!dbTimestamp) return DIF;
+
+  const dif = Math.round((+utcUnix() - +dbTimestamp) / 1000);
+
+  if (dif < DIF) {
+    return DIF - dif;
+  } else {
+    return null;
+  }
+};
 
 export const POST = async (req: NextRequest) => {
   const data = await req.json();
@@ -15,15 +30,12 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ message: 'ورودی نامعتبر' }, { status: 404 });
   }
 
-  const otp = generateOtp();
-
-  const [user] = await db
-    .update(User)
-    .set({
-      otp,
-    })
-    .where(eq(User.phoneNumber, verifiedFields.data.phoneNumber))
-    .returning();
+  const user = await db.query.User.findFirst({
+    columns: {
+      lastOtpAttempt: true,
+    },
+    where: eq(User.phoneNumber, verifiedFields.data.phoneNumber),
+  });
 
   if (!user) {
     return NextResponse.json(
@@ -34,6 +46,25 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
+  const dif = differenceInSecondsToNow(user.lastOtpAttempt);
+
+  if (dif) {
+    return NextResponse.json({
+      message: 'کد تایید قبلی شما هنوز معتبر است',
+      otpAge: dif,
+    });
+  }
+
+  const otp = generateOtp();
+
+  await db
+    .update(User)
+    .set({
+      otp,
+      lastOtpAttempt: utcUnix(),
+    })
+    .where(eq(User.phoneNumber, verifiedFields.data.phoneNumber));
+
   const res = await sendOtp(verifiedFields.data.phoneNumber, otp);
 
   if (!res) {
@@ -43,5 +74,5 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
-  return NextResponse.json({ message: 'کد تایید ارسال شد' });
+  return NextResponse.json({ message: 'کد تایید ارسال شد', otpAge: DIF });
 };
