@@ -32,6 +32,7 @@ const LoginForm = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [userName, setUserName] = useState('');
   const [userOtpNumber, setUserOtpNumber] = useState('');
+  const [autoSub, setAutoSub] = useState(true);
   const [inputError, setInputError] = useState('');
   const [isPending, startTransition] = useTransition();
   const [otpAge, setOtpAge] = useState(0);
@@ -155,6 +156,8 @@ const LoginForm = () => {
             break;
         }
       } catch (error) {
+        setUserOtpNumber('');
+        setAutoSub(true);
         handleError(error as any);
       }
     });
@@ -175,8 +178,9 @@ const LoginForm = () => {
   };
 
   useEffect(() => {
-    if (userOtpNumber.length === 5) {
+    if (autoSub && userOtpNumber.length === 5) {
       onVerification();
+      setAutoSub(false);
     }
   }, [userOtpNumber, onVerification]);
 

@@ -34,7 +34,7 @@ export const POST = async (req: NextRequest) => {
   }
 
   return NextResponse.json(
-    { message: 'کد تایید ارسال شد', otpAge: 180 },
+    { message: 'کد تایید ارسال شد', otpAge: +process.env.OTP_AGE! },
     { status: 201 }
   );
 };

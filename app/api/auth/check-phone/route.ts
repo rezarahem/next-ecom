@@ -7,12 +7,12 @@ import { PhoneNumberSchema } from '@/zod/zod';
 import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
-const DIF = 180;
+const DIF = +process.env.OTP_AGE!;
 
-const differenceInSecondsToNow = (dbTimestamp: string | null) => {
-  if (!dbTimestamp) return DIF;
+const differenceInSecondsToNow = (lastOtpAttempt: string | null) => {
+  if (!lastOtpAttempt) return DIF;
 
-  const dif = Math.round((+utcUnix() - +dbTimestamp) / 1000);
+  const dif = Math.round((+utcUnix() - +lastOtpAttempt) / 1000);
 
   if (dif < DIF) {
     return DIF - dif;
