@@ -1,5 +1,5 @@
 'use client';
-import { useState, useTransition } from 'react';
+import { useCallback, useEffect, useState, useTransition } from 'react';
 import { Button } from '../ui/button';
 import { ArrowLeft, LoaderCircle } from 'lucide-react';
 import { Input } from '../ui/input';
@@ -13,6 +13,7 @@ import { handleError } from '@/lib/handle-error';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { OtpSchema, PhoneNumberSchema, UserRegisterSchema } from '@/zod/zod';
+import { useRouter } from 'next/navigation';
 
 type BackendResType = {
   data: {
@@ -24,18 +25,58 @@ type BackendResType = {
 type ActiveTempTypes = 'phoneNumber' | 'userName' | 'otpNumber';
 
 const LoginForm = () => {
-  const [activeTemp, setActiveTemp] = useState<ActiveTempTypes>('otpNumber');
+  const [activeTemp, setActiveTemp] = useState<ActiveTempTypes>('phoneNumber');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [userName, setUserName] = useState('');
   const [userOtpNumber, setUserOtpNumber] = useState('');
   const [inputError, setInputError] = useState('');
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   ////////////////////////////////////////////////
 
   const setError = (e: any) => {
     setInputError(e.errors[0].message);
   };
+
+  // const onVerification = useCallback(() => {
+  //   try {
+  //     startTransition(async () => {
+  //       const validatedPhoneNumber = PhoneNumberSchema.safeParse(
+  //         toEnglishNumberStr(phoneNumber),
+  //       );
+
+  //       if (!validatedPhoneNumber.success) {
+  //         toast.error('خطایی رخ داد، مجددا تلاش کنید');
+  //         setActiveTemp('phoneNumber');
+  //         return;
+  //       }
+
+  //       const validatedOtp = OtpSchema.safeParse(
+  //         toEnglishNumberStr(userOtpNumber),
+  //       );
+
+  //       if (!validatedOtp.success) {
+  //         setInputError(validatedOtp.error.errors[0].message);
+  //         return;
+  //       }
+
+  //       const res = await OtpVerification(
+  //         validatedPhoneNumber.data,
+  //         validatedOtp.data,
+  //       );
+
+  //       if (res.success) {
+  //         toast.success('ورود موفق');
+  //         router.push('/');
+  //       } else {
+  //         toast.error(res?.errorMessage || 'اختلال در شبکه، مجددا تلاش کنید');
+  //       }
+  //     });
+  //   } catch (error) {
+  //     toast.error('خطایی رخ داد، مجددا تلاش کنید');
+  //   }
+  // }, [userOtpNumber, phoneNumber, router]);
 
   const handleSubmit = () => {
     switch (activeTemp) {
@@ -83,64 +124,72 @@ const LoginForm = () => {
       }
     });
   };
+
   const onRegister = () => {
     startTransition(async () => {
-      const verifiedFields = UserRegisterSchema.safeParse({
-        userName,
-        phoneNumber: toEnglishNumberStr(phoneNumber),
-      });
-
-      if (!verifiedFields.success) {
-        setError(verifiedFields.error);
-        return;
-      }
-
-      const { data, status } = await axios.post(
-        `${process.env.NEXT_PUBLIC_API}/auth/register`,
-        verifiedFields.data
-      );
-
-      switch (status) {
-        case 201:
-          setActiveTemp('otpNumber');
-          toast.success(data.message);
-          break;
-      }
       try {
+        const verifiedFields = UserRegisterSchema.safeParse({
+          userName,
+          phoneNumber: toEnglishNumberStr(phoneNumber),
+        });
+
+        if (!verifiedFields.success) {
+          setError(verifiedFields.error);
+          return;
+        }
+
+        const { data, status } = await axios.post(
+          `${process.env.NEXT_PUBLIC_API}/auth/register`,
+          verifiedFields.data
+        );
+
+        switch (status) {
+          case 201:
+            setActiveTemp('otpNumber');
+            toast.success(data.message);
+            break;
+        }
       } catch (error) {
         handleError(error as any);
       }
     });
   };
-  const onVerification = () => {
+
+  const onVerification = useCallback(() => {
     startTransition(async () => {
-      const verifiedFields = OtpSchema.safeParse({
-        otp: toEnglishNumberStr(userOtpNumber),
-        phoneNumber: toEnglishNumberStr(phoneNumber),
-      });
-
-      if (!verifiedFields.success) {
-        setError(verifiedFields.error);
-        return;
-      }
-
-      const { data, status } = await axios.post(
-        `${process.env.NEXT_PUBLIC_API}/auth/verify-otp`,
-        verifiedFields.data
-      );
-
-      switch (status) {
-        case 200:
-          toast.success(data.message);
-          break;
-      }
-
       try {
+        const verifiedFields = OtpSchema.safeParse({
+          otp: toEnglishNumberStr(userOtpNumber),
+          phoneNumber: toEnglishNumberStr(phoneNumber),
+        });
+
+        if (!verifiedFields.success) {
+          setError(verifiedFields.error);
+          return;
+        }
+
+        const { data, status } = await axios.post(
+          `${process.env.NEXT_PUBLIC_API}/auth/verify-otp`,
+          verifiedFields.data
+        );
+
+        switch (status) {
+          case 200:
+            toast.success(data.message);
+            router.push('/');
+            break;
+        }
       } catch (error) {
         handleError(error as any);
       }
     });
-  };
+  }, [userOtpNumber, phoneNumber, router]);
+
+  useEffect(() => {
+    if (userOtpNumber.length === 5) {
+      onVerification();
+    }
+  }, [userOtpNumber, onVerification]);
 
   ////////////////////////////////////////////////
   const loginInput = () => {
