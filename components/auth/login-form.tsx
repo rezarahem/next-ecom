@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { Button } from '../ui/button';
 import { ArrowLeft, LoaderCircle } from 'lucide-react';
 import { Input } from '../ui/input';
@@ -14,7 +14,6 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { OtpSchema, PhoneNumberSchema, UserRegisterSchema } from '@/zod/zod';
 import { useRouter } from 'next/navigation';
-// import type { ChangeEvent } from 'react';
 import { useCountdown } from 'usehooks-ts';
 
 type BackendResType = {
@@ -41,9 +40,6 @@ const LoginForm = () => {
       countStart: otpAge,
       intervalMs: 1000,
     });
-  // const handleChangeIntervalValue = (event: ChangeEvent<HTMLInputElement>) => {
-  //   setIntervalValue(Number(event.target.value));
-  // };
 
   const router = useRouter();
 

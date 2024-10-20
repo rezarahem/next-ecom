@@ -1,6 +1,6 @@
 import { db } from '@/drizzle/db';
 import { User } from '@/drizzle/drizzle';
-import { utcDate, utcUnix } from '@/lib/date';
+import { utcUnix } from '@/lib/date';
 import { generateOtp } from '@/lib/generate-otp';
 import { sendOtp } from '@/lib/send-otp';
 import { PhoneNumberSchema } from '@/zod/zod';

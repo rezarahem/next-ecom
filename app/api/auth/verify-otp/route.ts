@@ -1,6 +1,7 @@
 import { db } from '@/drizzle/db';
 import { User } from '@/drizzle/drizzle';
 import { utcUnix } from '@/lib/date';
+import { SetCookie } from '@/lib/set-cookie';
 import { OtpSchema } from '@/zod/zod';
 import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
@@ -50,6 +51,15 @@ export const POST = async (req: NextRequest) => {
       { status: 404 }
     );
   }
+
+  const sessionId = await SetCookie(userLoginData.id);
+
+  await db
+    .update(User)
+    .set({
+      sessionId: sessionId,
+    })
+    .where(eq(User.id, userLoginData.id));
 
   return NextResponse.json({ message: 'ورود موفق' });
 
