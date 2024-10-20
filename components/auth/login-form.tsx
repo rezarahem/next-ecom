@@ -117,6 +117,7 @@ const LoginForm = () => {
 
         switch (status) {
           case 201:
+            setOtpAge(data.otpAge);
             setActiveTemp('otpNumber');
             toast.success(data.message);
             break;
