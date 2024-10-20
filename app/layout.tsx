@@ -2,6 +2,8 @@ import { ToastProvider } from '@/providers/toast-provider';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Vazirmatn } from 'next/font/google';
+import { ThemeProvider } from '@/providers/theme-provider';
+import NextTopLoader from 'nextjs-toploader';
 
 const vazir = Vazirmatn({ subsets: ['arabic'] });
 
@@ -18,8 +20,15 @@ export default function RootLayout({
   return (
     <html dir='rtl' lang='fa' suppressHydrationWarning>
       <body className={vazir.className}>
-        {children}
-        <ToastProvider />
+        <NextTopLoader showSpinner={false} />
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange>
+          {children}
+          <ToastProvider />
+        </ThemeProvider>
       </body>
     </html>
   );
