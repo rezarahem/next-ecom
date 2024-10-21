@@ -5,14 +5,13 @@ import { RiContrastFill } from 'react-icons/ri';
 import { Button } from '../ui/button';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
-import { useEffect } from 'react';
 
 const ThemeController = () => {
   const { theme, setTheme } = useTheme();
 
-  useEffect(() => {
-    if (theme) setTheme(theme);
-  }, [theme, setTheme]);
+  // useEffect(() => {
+  //   if (theme) setTheme(theme);
+  // }, [theme, setTheme]);
 
   return (
     <div className='flex'>
