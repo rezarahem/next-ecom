@@ -1,4 +1,5 @@
 import ThemeController from '@/components/ui/theme-controller';
+import { ThemeSwitcher } from '@/components/ui/theme-switcher';
 
 const HomeLayout = ({
   children,
@@ -11,7 +12,8 @@ const HomeLayout = ({
         <div className='h-14 border-b'></div>
         <main>{children}</main>
         <div className='h-44 border-t'>
-          <ThemeController />
+          <ThemeSwitcher />
+          {/* <ThemeController /> */}
         </div>
       </div>
     </div>
