@@ -1,5 +1,6 @@
-import DashboardSidebar from '@/components/dashboard-sidebar/dashboard-sidebar';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import DashboardNavbar from '@/components/dashboard/navbar/dashboard-nvbar';
+import DashboardSidebar from '@/components/dashboard/sidebar/dashboard-sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 const DashboardLayout = ({
   children,
@@ -9,8 +10,8 @@ const DashboardLayout = ({
   return (
     <SidebarProvider>
       <DashboardSidebar />
-      <div>
-        <SidebarTrigger />
+      <div className='w-full grid min-h-dvh grid-rows-[auto_1fr]'>
+        <DashboardNavbar />
         {children}
       </div>
     </SidebarProvider>

@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/sidebar';
 import { DashboardSidebarFooter } from './dashboard-sidebar-footer';
 import { DashboardSidebarMenu } from './dashboard-sidebar-menu';
-import { ScrollArea } from '../ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const DashboardSidebar = () => {
   return (
