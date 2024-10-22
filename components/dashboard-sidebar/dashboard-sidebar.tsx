@@ -12,7 +12,7 @@ const DashboardSidebar = () => {
   return (
     <Sidebar side='right' collapsible='icon'>
       <SidebarContent>
-        <ScrollArea dir='rtl'>
+        <ScrollArea dir='rtl' className='pl-1'>
           <DashboardSidebarMenu />
         </ScrollArea>
       </SidebarContent>
