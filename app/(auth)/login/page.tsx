@@ -1,11 +1,11 @@
 import LoginForm from '@/components/auth/login-form';
-import { GetCookie } from '@/lib/get-cookie';
+import { getSeesion } from '@/lib/session';
 import { redirect } from 'next/navigation';
 
 const LoginPage = async () => {
-  const session = await GetCookie();
+  const user = await getSeesion();
 
-  if (!session) {
+  if (!user) {
     return (
       <div className='flex h-dvh justify-center max-md:mt-20 md:items-center'>
         <LoginForm />
@@ -13,7 +13,7 @@ const LoginPage = async () => {
     );
   }
 
-  if (session.userId) redirect('/');
+  if (user.id) redirect('/');
 };
 
 export default LoginPage;

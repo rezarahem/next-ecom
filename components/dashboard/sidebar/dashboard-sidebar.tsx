@@ -9,6 +9,7 @@ import { DashboardSidebarMenu } from './dashboard-sidebar-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const DashboardSidebar = () => {
+  
   return (
     <Sidebar side='right' collapsible='icon'>
       <SidebarContent>

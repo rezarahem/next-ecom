@@ -1,7 +1,7 @@
 import { db } from '@/drizzle/db';
 import { User } from '@/drizzle/drizzle';
 import { utcUnix } from '@/lib/date';
-import { SetCookie } from '@/lib/set-cookie';
+import { setCookie } from '@/lib/cookie';
 import { OtpSchema } from '@/zod/zod';
 import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
@@ -52,7 +52,7 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
-  const sessionId = await SetCookie(userLoginData.id);
+  const sessionId = await setCookie(userLoginData.id);
 
   await db
     .update(User)
