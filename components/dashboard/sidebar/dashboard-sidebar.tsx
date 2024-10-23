@@ -7,9 +7,13 @@ import {
 import { DashboardSidebarFooter } from './dashboard-sidebar-footer';
 import { DashboardSidebarMenu } from './dashboard-sidebar-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { SessionTypes } from '@/lib/session';
 
-const DashboardSidebar = () => {
-  
+type DashboardSidebarProps = {
+  user: SessionTypes;
+};
+
+const DashboardSidebar = ({ user }: DashboardSidebarProps) => {
   return (
     <Sidebar side='right' collapsible='icon'>
       <SidebarContent>

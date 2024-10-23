@@ -5,15 +5,13 @@ import { redirect } from 'next/navigation';
 const LoginPage = async () => {
   const user = await getSeesion();
 
-  if (!user) {
-    return (
-      <div className='flex h-dvh justify-center max-md:mt-20 md:items-center'>
-        <LoginForm />
-      </div>
-    );
-  }
+  if (user) redirect('/');
 
-  if (user.id) redirect('/');
+  return (
+    <div className='flex h-dvh justify-center max-md:mt-20 md:items-center'>
+      <LoginForm />
+    </div>
+  );
 };
 
 export default LoginPage;
