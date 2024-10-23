@@ -34,7 +34,7 @@ export const POST = async (req: NextRequest) => {
     columns: {
       lastOtpAttempt: true,
     },
-    where: eq(User.phoneNumber, verifiedFields.data.phoneNumber),
+    where: eq(User.phone, verifiedFields.data.phoneNumber),
   });
 
   if (!user) {
@@ -63,7 +63,7 @@ export const POST = async (req: NextRequest) => {
       otp,
       lastOtpAttempt: utcUnix(),
     })
-    .where(eq(User.phoneNumber, verifiedFields.data.phoneNumber));
+    .where(eq(User.phone, verifiedFields.data.phoneNumber));
 
   const res = await sendOtp(verifiedFields.data.phoneNumber, otp);
 

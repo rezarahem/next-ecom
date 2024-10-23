@@ -18,7 +18,7 @@ export const POST = async (req: NextRequest) => {
   const otp = generateOtp();
 
   await db.insert(User).values({
-    phoneNumber: verifiedFields.data.phoneNumber,
+    phone: verifiedFields.data.phoneNumber,
     name: verifiedFields.data.userName,
     otp,
     lastOtpAttempt: utcUnix(),

@@ -10,6 +10,7 @@ export const User = pgTable(
     otp: varchar({ length: 5 }),
     sessionId: varchar({ length: 2024 }).unique(),
     lastOtpAttempt: varchar({ length: 50 }),
+    role: varchar({ length: 24 }).default('user'),
   },
   t => ({
     sessionIdIndex: index().on(t.id, t.sessionId),

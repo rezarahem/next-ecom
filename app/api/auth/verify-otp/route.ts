@@ -28,7 +28,7 @@ export const POST = async (req: NextRequest) => {
   const [userLoginData] = await db
     .select()
     .from(User)
-    .where(eq(User.phoneNumber, verifiedFields.data.phoneNumber));
+    .where(eq(User.phone, verifiedFields.data.phoneNumber));
 
   if (!userLoginData || !userLoginData.otp) {
     return NextResponse.json({ message: 'ورودی نامعتبر' }, { status: 404 });
