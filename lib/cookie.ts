@@ -2,6 +2,7 @@ import 'server-only';
 import { cookies } from 'next/headers';
 import { joseEncrypt } from './jose-encrypt';
 import { joseDecrypt } from './jose-encrypt';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const setCookie = async (id: number) => {
   const cookieData = await joseEncrypt(id);
@@ -12,6 +13,7 @@ export const setCookie = async (id: number) => {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
+    // path: '/',
   });
 
   return cookieData;
@@ -25,12 +27,27 @@ export const getCookie = async () => {
   return { sid, userId };
 };
 
-export const updateCookie = async (cookieData: string) => {
+export const updateCookie = async (req: NextRequest) => {
+  const sid = req.cookies.get(process.env.SESSION_COOKIE_NAME!)?.value;
+
+  if (!sid) return;
+
   const cookieAge = new Date(Date.now() + +process.env.COOKIE_AGE!);
-  (await cookies()).set(process.env.SESSION_COOKIE_NAME!, cookieData, {
+  const res = NextResponse.next();
+
+  res.cookies.set(process.env.SESSION_COOKIE_NAME!, sid, {
     expires: cookieAge,
     httpOnly: true,
     secure: true,
     sameSite: 'none',
+    path: '/',
+  });
+
+  return res;
+};
+
+export const removeCookie = async () => {
+  (await cookies()).set(process.env.SESSION_COOKIE_NAME!, '', {
+    expires: new Date(0),
   });
 };
