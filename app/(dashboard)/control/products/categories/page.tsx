@@ -1,16 +1,16 @@
-import DashContainerSidebar from '@/components/ui/dash-page-container';
 import { getSeesion } from '@/lib/session';
 import { redirect } from 'next/navigation';
+import AddNewCat from './add-new-cat';
 
 const ProductCategories = async () => {
   const session = await getSeesion();
   if (!session) redirect('/login?callbackUrl=/control/products/categories');
 
   return (
-    <DashContainerSidebar>
-      <div>main</div>
-      {/* <div className='border-r w-80'></div> */}
-    </DashContainerSidebar>
+    <div>
+      
+      <AddNewCat />
+    </div>
   );
 };
 
