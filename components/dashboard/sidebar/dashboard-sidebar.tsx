@@ -15,9 +15,7 @@ type DashboardSidebarProps = {
 };
 
 const DashboardSidebar = ({ user }: DashboardSidebarProps) => {
-  if (!user) return;
-
-  const menus = getMenu(user.role);
+  const menus = getMenu(user?.role);
 
   return (
     <Sidebar side='right' collapsible='icon'>
@@ -27,7 +25,11 @@ const DashboardSidebar = ({ user }: DashboardSidebarProps) => {
         </ScrollArea>
       </SidebarContent>
       <SidebarFooter>
-        <DashboardSidebarFooter />
+        <DashboardSidebarFooter
+          name={user?.name}
+          phone={user?.phone}
+          image={user?.image}
+        />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

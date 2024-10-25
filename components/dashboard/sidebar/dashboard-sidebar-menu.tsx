@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronLeft, Divide, PackageSearch, Settings2 } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 
 import {
   Collapsible,
@@ -17,11 +17,7 @@ import {
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import {
-  DashboardSidebarMenuItemsTypes,
-  getMenu,
-  MenuItems,
-} from './dashboard-sidebar-menu-items';
+import { DashboardSidebarMenuItemsTypes } from './dashboard-sidebar-menu-items';
 
 type DashboardSidebarMenuProps = {
   menus: DashboardSidebarMenuItemsTypes[];

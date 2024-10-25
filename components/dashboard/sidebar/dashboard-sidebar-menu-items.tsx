@@ -2,16 +2,18 @@ import 'server-only';
 import { JSX } from 'react';
 import { PackageSearch, Settings2 } from 'lucide-react';
 
+type Access = 'user' | 'admin';
+
 export type DashboardSidebarMenuItemsTypes = {
   id: number;
   label: string;
-  access: string[];
+  access: Access[];
   address?: string;
   icon?: JSX.Element;
   children?: DashboardSidebarMenuItemsTypes[];
 };
 
-export const MenuItems: DashboardSidebarMenuItemsTypes[] = [
+const MenuItems: DashboardSidebarMenuItemsTypes[] = [
   {
     id: 1,
     label: 'محصولات',
@@ -50,10 +52,10 @@ export const MenuItems: DashboardSidebarMenuItemsTypes[] = [
 
 const dashboardMenus = (
   menuItems: DashboardSidebarMenuItemsTypes[],
-  userAccess: string
+  userAccess: string | undefined
 ): DashboardSidebarMenuItemsTypes[] => {
   return menuItems
-    .filter(item => item.access.includes(userAccess))
+    .filter(item => item.access.includes(userAccess as Access))
     .map(item => ({
       ...item,
       children:
@@ -62,6 +64,6 @@ const dashboardMenus = (
     .filter(item => item.children?.length || !item.children);
 };
 
-export const getMenu = (userAccess: string) => {
+export const getMenu = (userAccess: string | undefined) => {
   return dashboardMenus(MenuItems, userAccess);
 };
