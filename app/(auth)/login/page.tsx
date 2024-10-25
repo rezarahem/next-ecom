@@ -1,4 +1,3 @@
-import { UpdateSession } from '@/action/logout';
 import LoginForm from '@/components/auth/login-form';
 import { getSeesion } from '@/lib/session';
 import { redirect } from 'next/navigation';

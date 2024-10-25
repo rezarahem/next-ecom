@@ -11,12 +11,9 @@ export type SessionTypes = {
   phone: string;
   image: string | null;
   role: string;
-  sid: string;
 } | null;
 
-export const getSeesion = async (
-  updateSession = true
-): Promise<SessionTypes> => {
+export const getSeesion = async (): Promise<SessionTypes> => {
   const cookie = await getCookie();
 
   if (!cookie) return null;
@@ -33,10 +30,5 @@ export const getSeesion = async (
 
   if (!user) return null;
 
-  // await axios.post(`${process.env.NEXT_PUBLIC_API}/auth/session`, cookie.sid);
-
-  return {
-    ...user,
-    sid: cookie.sid,
-  };
+  return user;
 };

@@ -8,7 +8,7 @@ const DashboardLayout = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const user = await getSeesion(false);
+  const user = await getSeesion();
 
   return (
     <SidebarProvider>

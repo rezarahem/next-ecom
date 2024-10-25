@@ -1,22 +1,21 @@
 import 'server-only';
+import { JSX } from 'react';
 import { PackageSearch, Settings2 } from 'lucide-react';
-
-type AccessTypes = 'admin' | 'seller';
 
 export type DashboardSidebarMenuItemsTypes = {
   id: number;
   label: string;
-  access: AccessTypes[];
+  access: string[];
   address?: string;
-  icon?: any;
+  icon?: JSX.Element;
   children?: DashboardSidebarMenuItemsTypes[];
 };
 
-export const items: DashboardSidebarMenuItemsTypes[] = [
+export const MenuItems: DashboardSidebarMenuItemsTypes[] = [
   {
     id: 1,
     label: 'محصولات',
-    icon: PackageSearch,
+    icon: <PackageSearch />,
     access: ['admin'],
     children: [
       {
@@ -36,7 +35,7 @@ export const items: DashboardSidebarMenuItemsTypes[] = [
   {
     id: 2,
     label: 'تنظیمات',
-    icon: Settings2,
+    icon: <Settings2 />,
     access: ['admin'],
     children: [
       {
@@ -48,3 +47,21 @@ export const items: DashboardSidebarMenuItemsTypes[] = [
     ],
   },
 ];
+
+const dashboardMenus = (
+  menuItems: DashboardSidebarMenuItemsTypes[],
+  userAccess: string
+): DashboardSidebarMenuItemsTypes[] => {
+  return menuItems
+    .filter(item => item.access.includes(userAccess))
+    .map(item => ({
+      ...item,
+      children:
+        item.children ? dashboardMenus(item.children, userAccess) : undefined,
+    }))
+    .filter(item => item.children?.length || !item.children);
+};
+
+export const getMenu = (userAccess: string) => {
+  return dashboardMenus(MenuItems, userAccess);
+};
