@@ -55,7 +55,9 @@ export function DashboardSidebarFooter({
               </Avatar>
               <div className='grid flex-1 text-left text-sm leading-tight'>
                 <span className='truncate font-semibold'>{name}</span>
-                <span className='truncate text-xs'>{phone}</span>
+                <span className='truncate text-xs'>
+                  {phone}
+                </span>
               </div>
               <ChevronsUpDown className='ml-auto size-4' />
             </SidebarMenuButton>
@@ -69,7 +71,9 @@ export function DashboardSidebarFooter({
               <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
                 <div className='grid flex-1 text-right text-sm leading-tight'>
                   <span className='truncate font-semibold'>{name}</span>
-                  <span className='truncate text-xs'>{phone}</span>
+                  <span className='truncate text-xs'>
+                    {phone}
+                  </span>
                 </div>
 
                 <Avatar className='h-8 w-8 rounded-lg'>

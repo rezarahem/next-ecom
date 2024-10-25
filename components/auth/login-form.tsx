@@ -16,6 +16,10 @@ import { OtpSchema, PhoneNumberSchema, UserRegisterSchema } from '@/zod/zod';
 import { useRouter } from 'next/navigation';
 import { useCountdown } from 'usehooks-ts';
 
+type LoginFormProp = {
+  callbackUrl: string | undefined;
+};
+
 type BackendResType = {
   data: {
     message: string;
@@ -26,7 +30,7 @@ type BackendResType = {
 
 type ActiveTempTypes = 'phoneNumber' | 'userName' | 'otpNumber';
 
-const LoginForm = () => {
+const LoginForm = ({ callbackUrl }: LoginFormProp) => {
   const [activeTemp, setActiveTemp] = useState<ActiveTempTypes>('phoneNumber');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [userName, setUserName] = useState('');
@@ -149,7 +153,7 @@ const LoginForm = () => {
         switch (status) {
           case 200:
             toast.success(data.message);
-            router.push('/');
+            router.push(callbackUrl ?? '/');
             break;
         }
       } catch (error) {

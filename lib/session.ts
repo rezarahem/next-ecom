@@ -4,7 +4,6 @@ import { getCookie } from './cookie';
 import { db } from '@/drizzle/db';
 import { and, eq } from 'drizzle-orm';
 import { User } from '@/drizzle/drizzle';
-import axios from 'axios';
 
 export type SessionTypes = {
   name: string;

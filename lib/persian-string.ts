@@ -7,12 +7,12 @@ export const toPersianNumberStr = (value: string): string => {
   if (!value) return '';
 
   return value
-    .replace(regExpArabicNumber, (c) => {
+    .replace(regExpArabicNumber, c => {
       return String.fromCharCode(
-        parseInt((c.charCodeAt(0) - 0x0660) as any, 10) + 0x06f0,
+        parseInt((c.charCodeAt(0) - 0x0660) as any, 10) + 0x06f0
       );
     })
-    .replace(regExpEnglishNumber, (c) => {
+    .replace(regExpEnglishNumber, c => {
       return String.fromCharCode(parseInt(c, 10) + 0x06f0);
     });
 };
@@ -21,10 +21,10 @@ export const toEnglishNumberStr = (value: string): string => {
   if (!value) return '';
 
   return value
-    .replace(regExpArabicNumber, (c) => {
+    .replace(regExpArabicNumber, c => {
       return (c.charCodeAt(0) - 0x0660) as any;
     })
-    .replace(regExpPersianNumber, (c) => {
+    .replace(regExpPersianNumber, c => {
       return (c.charCodeAt(0) - 0x06f0) as any;
     });
 };
@@ -49,14 +49,14 @@ export const addCommaAndRetuenPersianStringNumberOnChange = (value: string) => {
   const turnToEnNumber = toEnglishNumberStr(valueWithoutComma);
   const addCommaToEnNumberValue = turnToEnNumber.replace(
     /\B(?=(\d{3})+(?!\d))/g,
-    ',',
+    ','
   );
   return toPersianNumberStr(addCommaToEnNumberValue);
 };
 
 export const calculateDiscountPercentageFromSpecialPriceDif = (
   price: number,
-  specialPriceDif: number,
+  specialPriceDif: number
 ) => {
   const dis = Math.abs(Math.ceil((specialPriceDif / price) * 100));
   return `٪ ${toPersianNumberStr(String(dis))}`;
@@ -64,7 +64,7 @@ export const calculateDiscountPercentageFromSpecialPriceDif = (
 
 export const calculateDiscountPercentageFromFullSpecialPrice = (
   price: number,
-  specialPrice: number,
+  specialPrice: number
 ) => {
   const dis = Math.abs(Math.ceil(((price - specialPrice) / price) * 100));
 
@@ -73,7 +73,7 @@ export const calculateDiscountPercentageFromFullSpecialPrice = (
 
 export const calculateFinalSpecialPriceFromPercentageDiscount = (
   price: number,
-  percentage: number,
+  percentage: number
 ) => {
   const calculateRate = percentage / 100;
   return price - price * calculateRate;
@@ -81,7 +81,7 @@ export const calculateFinalSpecialPriceFromPercentageDiscount = (
 
 export const calculateSpecialPriceDiscountFromPercentage = (
   price: number,
-  percentage: number,
+  percentage: number
 ) => {
   const calculateRate = percentage / 100;
   return price * calculateRate;
@@ -95,7 +95,7 @@ export const phoneNumberWithSpaces = (value: string): string => {
 
 export const millisecondsToSecondsDifference = (
   timestamp1: number,
-  timestamp2: number,
+  timestamp2: number
 ): number => {
   const differenceInMilliseconds = Math.abs(timestamp1 - timestamp2);
   const differenceInSeconds = differenceInMilliseconds / 1000;
