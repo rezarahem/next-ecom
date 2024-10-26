@@ -1,6 +1,7 @@
 'use client';
 
 import { ChevronLeft } from 'lucide-react';
+import { useSidebar } from '@/components/ui/sidebar';
 
 import {
   Collapsible,
@@ -18,12 +19,23 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { DashboardSidebarMenuItemsTypes } from './dashboard-sidebar-menu-items';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 type DashboardSidebarMenuProps = {
   menus: DashboardSidebarMenuItemsTypes[];
 };
 
 export function DashboardSidebarMenu({ menus }: DashboardSidebarMenuProps) {
+  const [, , firstSeg, secondSeg] = usePathname().split('/');
+  const { toggleSidebar, isMobile, open } = useSidebar();
+
+  const handleCloseOnMobile = () => {
+    if (open && isMobile) {
+      toggleSidebar();
+    }
+  };
+
   return (
     <SidebarGroup>
       <SidebarMenu>
@@ -31,7 +43,10 @@ export function DashboardSidebarMenu({ menus }: DashboardSidebarMenuProps) {
           <Collapsible key={item.id} asChild className='group/collapsible'>
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton>
+                <SidebarMenuButton
+                  className={cn({
+                    'text-blue-500': firstSeg === item.activeLabel,
+                  })}>
                   {item.icon}
                   <span className='translate-y-px'>{item.label}</span>
                   <ChevronLeft className='mr-auto transition-transform duration-200 group-data-[state=open]/collapsible:-rotate-90' />
@@ -42,7 +57,15 @@ export function DashboardSidebarMenu({ menus }: DashboardSidebarMenuProps) {
                   {item.children?.map(subItem => (
                     <SidebarMenuSubItem key={subItem.label}>
                       {subItem.address && (
-                        <SidebarMenuSubButton asChild>
+                        <SidebarMenuSubButton
+                          onClick={handleCloseOnMobile}
+                          asChild
+                          className={cn({
+                            'text-blue-500':
+                              secondSeg ?
+                                secondSeg === subItem.activeLabel
+                              : firstSeg === subItem.activeLabel,
+                          })}>
                           <Link href={subItem.address}>
                             <span>{subItem.label}</span>
                           </Link>

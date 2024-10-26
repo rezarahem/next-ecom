@@ -8,6 +8,7 @@ export type DashboardSidebarMenuItemsTypes = {
   id: number;
   label: string;
   access: Access[];
+  activeLabel: string;
   address?: string;
   icon?: JSX.Element;
   children?: DashboardSidebarMenuItemsTypes[];
@@ -19,18 +20,21 @@ const MenuItems: DashboardSidebarMenuItemsTypes[] = [
     label: 'محصولات',
     icon: <PackageSearch />,
     access: ['admin'],
+    activeLabel: 'products',
     children: [
       {
         id: 1,
         label: 'مدیریت محصولات',
         address: '/control/products',
         access: ['admin'],
+        activeLabel: 'products',
       },
       {
         id: 2,
         label: 'دسته‌بندی',
         address: '/control/products/categories',
         access: ['admin'],
+        activeLabel: 'categories',
       },
     ],
   },
@@ -39,12 +43,14 @@ const MenuItems: DashboardSidebarMenuItemsTypes[] = [
     label: 'تنظیمات',
     icon: <Settings2 />,
     access: ['admin'],
+    activeLabel: 'settings',
     children: [
       {
         id: 1,
         label: 'عمومی',
         address: '/control/settings',
         access: ['admin'],
+        activeLabel: 'settings',
       },
     ],
   },
