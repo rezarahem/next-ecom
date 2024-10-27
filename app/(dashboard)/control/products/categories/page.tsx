@@ -1,15 +1,15 @@
 import { getSeesion } from '@/lib/session';
 import { redirect } from 'next/navigation';
-import AddNewCat from './add-new-cat';
+import AddNewBtn from '../../../../../components/ui/add-new-btn';
 
 const ProductCategories = async () => {
   const session = await getSeesion();
+  
   if (!session) redirect('/login?callbackUrl=/control/products/categories');
 
   return (
     <div>
-      
-      <AddNewCat />
+      <AddNewBtn href='/control/products/categories/new' />
     </div>
   );
 };
