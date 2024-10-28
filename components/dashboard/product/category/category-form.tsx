@@ -58,29 +58,33 @@ const CategoryFormClient = ({ currentCat }: CategoryFormClientProps) => {
   const form = useForm<Form>({
     resolver: zodResolver(CategoryFormSchema),
     defaultValues: {
-      // id: currentCat?.id,
+      id: currentCat?.id,
       name: currentCat?.name ?? '',
       addressName: currentCat?.addressName.split('-').join(' ') ?? '',
-      // parentId: currentCat?.parentId ?? undefined,
+      parentId: currentCat?.parentId ?? undefined,
     },
   });
 
-  const submit = (data: any) => {
+  const submit = (formData: Form) => {
     startTransition(async () => {
       try {
-        const validatedField = CategoryFormSchema.safeParse(data);
+        const validatedField = CategoryFormSchema.safeParse(formData);
 
         if (!validatedField.success) {
           toast.error('ورودی نامعتبر');
           return;
         }
 
-        const res = await axios.post(
+        const { data, status } = await axios.post(
           `${process.env.NEXT_PUBLIC_API}/product/category`,
           validatedField.data
         );
 
-        console.log(res);
+        switch (status) {
+          case 201:
+            toast.success(toastMessage);
+            break;
+        }
       } catch (error) {
         handleError(error as any);
       }
@@ -91,7 +95,7 @@ const CategoryFormClient = ({ currentCat }: CategoryFormClientProps) => {
     <>
       <div className='flex items-center justify-between'>
         <Heading title={title} description={description} />
-        {!currentCat && (
+        {currentCat && (
           <Button disabled={isPending} variant='destructive' size='icon'>
             <Trash className='size-4' />
           </Button>

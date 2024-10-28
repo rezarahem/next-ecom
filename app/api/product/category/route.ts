@@ -22,7 +22,7 @@ export const POST = async (req: NextRequest) => {
   await db.insert(Category).values({
     name: verifiedFields.data.name,
     addressName: verifiedFields.data.addressName,
-    // parentId: verifiedFields.data.parentId,
+    parentId: verifiedFields.data.parentId,
   });
 
   return NextResponse.json({ message: 'دسته بندی ایجاد شد' }, { status: 201 });
