@@ -1,7 +1,7 @@
 import * as z from 'zod';
 
 export const CategoryFormSchema = z.object({
-  id: z.number().nullable(),
+  // id: z.number().nullable(),
   name: z
     .string({ required_error: 'الزامی' })
     .min(2, 'نام دسته‌بندی باید حداقل ۲ حرف باشد')
@@ -19,5 +19,5 @@ export const CategoryFormSchema = z.object({
       message: 'حروف فارسی غیر مجاز است',
     })
     .transform(v => v.split(' ').join('-')),
-  parentId: z.number().optional(),
+  // parentId: z.number().optional(),
 });

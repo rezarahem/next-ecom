@@ -8,6 +8,7 @@ import * as z from 'zod';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,6 +16,27 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import { cn } from '@/lib/utils';
+import Heading from '@/components/ui/heading';
+import { Separator } from '@/components/ui/separator';
+import { Trash } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { handleError } from '@/lib/handle-error';
+import axios from 'axios';
 
 type CategoryFormClientProps = {
   currentCat: Category | undefined;
@@ -29,26 +51,55 @@ const CategoryFormClient = ({ currentCat }: CategoryFormClientProps) => {
 
   const title = currentCat ? 'ویرایش دسته‌بندی' : 'ایجاد دسته‌بندی';
   const description =
-    currentCat ? 'مدیریت و ویرایش دسته‌بندی' : 'یک دسته‌بندی جدید ایجاد کنید.';
+    currentCat ? 'مدیریت و ویرایش دسته‌بندی' : 'یک دسته‌بندی جدید ایجاد کنید';
   const toastMessage = currentCat ? 'دسته‌بندی بروز شد' : 'دسته‌بندی ایجاد شد';
   const action = currentCat ? 'ذخیره تغییرات' : 'ایجاد';
 
   const form = useForm<Form>({
     resolver: zodResolver(CategoryFormSchema),
     defaultValues: {
-      id: currentCat?.id,
+      // id: currentCat?.id,
       name: currentCat?.name ?? '',
       addressName: currentCat?.addressName.split('-').join(' ') ?? '',
-      parentId: currentCat?.parentId ?? undefined,
+      // parentId: currentCat?.parentId ?? undefined,
     },
   });
 
+  const submit = (data: any) => {
+    startTransition(async () => {
+      try {
+        const validatedField = CategoryFormSchema.safeParse(data);
+
+        if (!validatedField.success) {
+          toast.error('ورودی نامعتبر');
+          return;
+        }
+
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_API}/product/category`,
+          validatedField.data
+        );
+
+        console.log(res);
+      } catch (error) {
+        handleError(error as any);
+      }
+    });
+  };
+
   return (
     <>
+      <div className='flex items-center justify-between'>
+        <Heading title={title} description={description} />
+        {!currentCat && (
+          <Button disabled={isPending} variant='destructive' size='icon'>
+            <Trash className='size-4' />
+          </Button>
+        )}
+      </div>
+      <Separator className='my-7' />
       <Form {...form}>
-        <form
-          //   onSubmit={form.handleSubmit(!isUpdating ? onSubmit : onUpdate)}
-          className='space-y-8'>
+        <form onSubmit={form.handleSubmit(submit)} className='space-y-8'>
           <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
             <FormField
               control={form.control}

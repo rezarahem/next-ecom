@@ -16,19 +16,16 @@ const Container = ({
   defualtPY: addDefualtVerticalPadding = false,
 }: ContainerProps) => {
   return (
-    <div
-      className={cn(
-        'mx-auto max-w-7xl px-3',
-        className,
-        {
+    <section>
+      <div
+        className={cn('mx-auto max-w-7xl px-3', className, {
           'h-full': isFullHeight,
-          'py-3': addDefualtVerticalPadding,
+          'py-5': addDefualtVerticalPadding,
           flex: isFlex,
-        },
-      )}
-    >
-      {children}
-    </div>
+        })}>
+        {children}
+      </div>
+    </section>
   );
 };
 

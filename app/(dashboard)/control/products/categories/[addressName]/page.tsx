@@ -1,4 +1,5 @@
 import CategoryFormClient from '@/components/dashboard/product/category/category-form';
+import Container from '@/components/ui/container';
 import { getCategoryByAddressName } from '@/drizzle/db-query/category';
 import { getSeesion } from '@/lib/session';
 import { redirect } from 'next/navigation';
@@ -18,7 +19,11 @@ const CategoryForm = async ({
 
   const cat = await getCategoryByAddressName(addressName);
 
-  return <CategoryFormClient currentCat={cat} />;
+  return (
+    <Container defualtPY>
+      <CategoryFormClient currentCat={cat} />
+    </Container>
+  );
 };
 
 export default CategoryForm;
