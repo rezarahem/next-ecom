@@ -5,6 +5,10 @@ import { Category } from '@/drizzle/drizzle';
 
 export type CategoryType = typeof Category.$inferSelect;
 
+export const getAllCats = async (): Promise<CategoryType[]> => {
+  return await db.query.Category.findMany();
+};
+
 export const getCategoryByAddressName = async (
   addressName: string
 ): Promise<CategoryType | undefined> => {

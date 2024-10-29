@@ -19,11 +19,17 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ message: 'ورودی نامعتبر' }, { status: 400 });
   }
 
-  await db.insert(Category).values({
-    name: verifiedFields.data.name,
-    addressName: verifiedFields.data.addressName,
-    parentId: verifiedFields.data.parentId,
-  });
+  const [cat] = await db
+    .insert(Category)
+    .values({
+      name: verifiedFields.data.name,
+      addressName: verifiedFields.data.addressName,
+      parentId: verifiedFields.data.parentId,
+    })
+    .returning();
 
-  return NextResponse.json({ message: 'دسته بندی ایجاد شد' }, { status: 201 });
+  return NextResponse.json(
+    { message: 'دسته بندی ایجاد شد', id: cat.id },
+    { status: 201 }
+  );
 };

@@ -37,17 +37,22 @@ import { Trash } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { handleError } from '@/lib/handle-error';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 type CategoryFormClientProps = {
   currentCat: CategoryType | undefined;
-  //   allCats: Category[] | undefined
+  allCats: CategoryType[];
 };
 
 type Form = z.infer<typeof CategoryFormSchema>;
 
-const CategoryFormClient = ({ currentCat }: CategoryFormClientProps) => {
+const CategoryFormClient = ({
+  currentCat,
+  allCats,
+}: CategoryFormClientProps) => {
   const [isPending, startTransition] = useTransition();
   const [openCombobox, setOpenCombobox] = useState(false);
+  const router = useRouter();
 
   const title = currentCat ? 'ویرایش دسته‌بندی' : 'ایجاد دسته‌بندی';
   const description =
@@ -83,6 +88,10 @@ const CategoryFormClient = ({ currentCat }: CategoryFormClientProps) => {
         switch (status) {
           case 201:
             toast.success(toastMessage);
+            router.push(
+              `/control/products/categories/${form.getValues('addressName')}`
+            );
+            // form.setValue('id', data.id);
             break;
         }
       } catch (error) {
@@ -139,7 +148,7 @@ const CategoryFormClient = ({ currentCat }: CategoryFormClientProps) => {
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={form.control}
               name='parentId'
               render={({ field }) => (
@@ -157,9 +166,7 @@ const CategoryFormClient = ({ currentCat }: CategoryFormClientProps) => {
                             'font-normal text-muted-foreground': !field.value,
                           })}>
                           {field.value ?
-                            allCategoriesExceptParentTreeOrAllCategories.find(
-                              category => category.id === field.value
-                            )?.categoryName
+                            allCats.find(c => c.id === field.value)?.name
                           : 'انتخاب کنید'}
                           <CaretSortIcon className='-ml-2 size-4 shrink-0 opacity-90' />
                         </Button>
@@ -171,37 +178,34 @@ const CategoryFormClient = ({ currentCat }: CategoryFormClientProps) => {
                         <CommandEmpty>نتیجه یافت نشد</CommandEmpty>
                         <CommandGroup>
                           <CommandList>
-                            {allCategoriesExceptParentTreeOrAllCategories.map(
-                              category => (
-                                <CommandItem
-                                  value={category.categoryName}
-                                  key={category.id}
-                                  onSelect={() => {
-                                    if (
-                                      !form.getValues('parentCategorytId') ||
-                                      form.getValues('parentCategorytId') !==
-                                        category.id
-                                    ) {
-                                      form.setValue(
-                                        'parentCategorytId',
-                                        category.id
-                                      );
-                                    } else {
-                                      form.setValue('parentCategorytId', null);
-                                    }
-                                  }}>
-                                  {category.categoryName}
-                                  <CheckIcon
-                                    className={cn(
-                                      'mr-auto h-4 w-4',
-                                      category.id === field.value ?
-                                        'opacity-100'
-                                      : 'opacity-0'
-                                    )}
-                                  />
-                                </CommandItem>
-                              )
-                            )}
+                            {allCats.map(c => (
+                              <CommandItem
+                                value={c.name}
+                                key={c.id}
+                                onSelect={() => {
+                                  if (
+                                    !form.getValues('parentId') ||
+                                    form.getValues('parentId') !== c.id
+                                  ) {
+                                    form.setValue('parentId', c.id);
+                                    setTimeout(() => {
+                                      setOpenCombobox(prev => !prev);
+                                    }, 25);
+                                  } else {
+                                    form.setValue('parentId', undefined);
+                                  }
+                                }}>
+                                {c.name}
+                                <CheckIcon
+                                  className={cn(
+                                    'mr-auto h-4 w-4',
+                                    c.id === field.value ?
+                                      'opacity-100'
+                                    : 'opacity-0'
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
                           </CommandList>
                         </CommandGroup>
                       </Command>
@@ -214,7 +218,7 @@ const CategoryFormClient = ({ currentCat }: CategoryFormClientProps) => {
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
           </div>
           <Button disabled={isPending} className='ml-auto' type='submit'>
             {action}
