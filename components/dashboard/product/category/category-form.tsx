@@ -14,6 +14,17 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -50,7 +61,8 @@ const CategoryFormClient = ({
   currentCat,
   allCats,
 }: CategoryFormClientProps) => {
-  const [isPending, startTransition] = useTransition();
+  const [pending, startTransition] = useTransition();
+  const [openAlertModal, setOpenAlertModal] = useState(false);
   const [openCombobox, setOpenCombobox] = useState(false);
   const router = useRouter();
 
@@ -70,7 +82,7 @@ const CategoryFormClient = ({
     },
   });
 
-  const submit = (formData: Form) => {
+  const onSubmit = (formData: Form) => {
     startTransition(async () => {
       try {
         const validatedField = CategoryFormSchema.safeParse(formData);
@@ -81,7 +93,7 @@ const CategoryFormClient = ({
         }
 
         const { data, status } = await axios.post(
-          `${process.env.NEXT_PUBLIC_API}/product/category`,
+          `${process.env.NEXT_PUBLIC_API}/product/create-category`,
           validatedField.data
         );
 
@@ -91,7 +103,30 @@ const CategoryFormClient = ({
             router.push(
               `/control/products/categories/${form.getValues('addressName')}`
             );
-            // form.setValue('id', data.id);
+            break;
+        }
+      } catch (error) {
+        handleError(error as any);
+      }
+    });
+  };
+
+  const onDelete = () => {
+    startTransition(async () => {
+      try {
+        const id = form.getValues('id');
+
+        const { data, status } = await axios.post(
+          `${process.env.NEXT_PUBLIC_API}/product/delete-category`,
+          {
+            id,
+          }
+        );
+
+        switch (status) {
+          case 200:
+            router.push(`/control/products/categories/`);
+            toast.success('دسته‌بندی با موفقیت حذف شد');
             break;
         }
       } catch (error) {
@@ -104,15 +139,33 @@ const CategoryFormClient = ({
     <>
       <div className='flex items-center justify-between'>
         <Heading title={title} description={description} />
-        {currentCat && (
-          <Button disabled={isPending} variant='destructive' size='icon'>
-            <Trash className='size-4' />
-          </Button>
-        )}
+        <AlertDialog>
+          {currentCat && (
+            <AlertDialogTrigger asChild>
+              <Button disabled={pending} variant='destructive' size='icon'>
+                <Trash className='size-4' />
+              </Button>
+            </AlertDialogTrigger>
+          )}
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className='text-right'>
+                از انجام این عملیات اطمینان دارید؟
+              </AlertDialogTitle>
+              <AlertDialogDescription className='text-right'>
+                این عمل غیر قابل بازگشت است
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className='gap-2'>
+              <AlertDialogCancel>کنسل</AlertDialogCancel>
+              <AlertDialogAction onClick={onDelete}>ادامه</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       <Separator className='my-7' />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(submit)} className='space-y-8'>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
           <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
             <FormField
               control={form.control}
@@ -122,7 +175,7 @@ const CategoryFormClient = ({
                   <FormLabel>نام دسته‌بندی</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={isPending}
+                      disabled={pending}
                       placeholder='نام دسته‌بندی'
                       {...field}
                     />
@@ -139,7 +192,7 @@ const CategoryFormClient = ({
                   <FormLabel>آدرس دسته‌بندی</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={isPending}
+                      disabled={pending}
                       placeholder='آدرس دسته‌بندی'
                       {...field}
                     />
@@ -157,7 +210,7 @@ const CategoryFormClient = ({
                     دسته‌بندی مادر
                   </FormLabel>
                   <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
-                    <PopoverTrigger asChild>
+                    <PopoverTrigger disabled={pending} asChild>
                       <FormControl>
                         <Button
                           variant='outline'
@@ -220,7 +273,7 @@ const CategoryFormClient = ({
               )}
             />
           </div>
-          <Button disabled={isPending} className='ml-auto' type='submit'>
+          <Button disabled={pending} className='ml-auto' type='submit'>
             {action}
           </Button>
         </form>

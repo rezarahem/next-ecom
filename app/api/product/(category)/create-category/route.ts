@@ -28,8 +28,5 @@ export const POST = async (req: NextRequest) => {
     })
     .returning();
 
-  return NextResponse.json(
-    { message: 'دسته بندی ایجاد شد', id: cat.id },
-    { status: 201 }
-  );
+  return NextResponse.json({ message: 'دسته‌بندی ایجاد شد' }, { status: 201 });
 };
