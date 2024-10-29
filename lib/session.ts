@@ -32,8 +32,7 @@ export const getSeesion = async (): Promise<SessionTypes> => {
   return user;
 };
 
-export const checkAdminAccess = async (): Promise<boolean> => {
+export const checkAdminAccess = async (): Promise<SessionTypes> => {
   const user = await getSeesion();
-  if (user?.role === 'admin') return true;
-  return false;
+  return user ? user : null;
 };

@@ -1,86 +1,54 @@
 import 'server-only';
 import { db } from '../db';
-import { Category as CategoryTable } from '../drizzle';
 import { eq, sql } from 'drizzle-orm';
+import { Category } from '@/drizzle/drizzle';
 
-export type Category = typeof CategoryTable.$inferSelect | undefined;
+export type CategoryType = typeof Category.$inferSelect;
 
 export const getCategoryByAddressName = async (
   addressName: string
-): Promise<Category | undefined> => {
+): Promise<CategoryType | undefined> => {
   return await db.query.Category.findFirst({
-    where: eq(CategoryTable.addressName, addressName),
+    where: eq(Category.addressName, addressName),
   });
 };
 
-export const getCatsExcludeTree = async (treeId: number) => {
+export const getCatsExcludeTree = async (
+  treeId: number
+): Promise<CategoryType[]> => {
   const data = await db.execute(
     sql`
     WITH RECURSIVE excluded_category_tree AS (
       SELECT
         id,
         name,
-        addressName,
-        parentId
+        address_name,
+        parent_id
       FROM
-        ${CategoryTable}
+        ${Category}
       WHERE
         id = ${treeId} -- the category to be excluded
       UNION ALL
       SELECT
         c.id,
         c.name,
-        c.addressName,
-        c.parentId
+        c.address_name,
+        c.parent_id
       FROM
-        ${CategoryTable} c
-        INNER JOIN excluded_category_tree ect ON ect.id = c.parentId
+        ${Category} c
+        INNER JOIN excluded_category_tree ect ON ect.id = c.parent_id
       )
       SELECT
         id,
         name,
-        addressName,
-        parentId
+        address_name AS "addressName",
+        parent_id AS "parentId"
       FROM
-        ${CategoryTable}
+        ${Category}
       WHERE
         id NOT IN (SELECT id FROM excluded_category_tree);
       `
   );
 
-  return data;
+  return data.rows as CategoryType[];
 };
-
-// const data = await db.execute(
-//     sql`
-//     WITH RECURSIVE excluded_category_tree AS (
-//       SELECT
-//         id,
-//         category_name,
-//         category_address_name,
-//         parent_id
-//       FROM
-//         ${Category}
-//       WHERE
-//         id = ${treeId} -- the category to be excluded
-//       UNION ALL
-//       SELECT
-//         c.id,
-//         c.category_name,
-//         c.category_address_name,
-//         c.parent_id
-//       FROM
-//         ${Category} c
-//         INNER JOIN excluded_category_tree ect ON ect.id = c.parent_id
-//       )
-//       SELECT
-//         id,
-//         category_name AS "categoryName",
-//         category_address_name AS "categoryAddressName",
-//         parent_id AS "parentId"
-//       FROM
-//         ${Category}
-//       WHERE
-//         id NOT IN (SELECT id FROM excluded_category_tree);
-//       `
-//   );

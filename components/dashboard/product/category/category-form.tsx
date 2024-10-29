@@ -1,5 +1,5 @@
 'use client';
-import { Category } from '@/drizzle/db-query/category';
+import { CategoryType } from '@/drizzle/db-query/category';
 import { CategoryFormSchema } from '@/zod/zod';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
@@ -39,7 +39,7 @@ import { handleError } from '@/lib/handle-error';
 import axios from 'axios';
 
 type CategoryFormClientProps = {
-  currentCat: Category | undefined;
+  currentCat: CategoryType | undefined;
   //   allCats: Category[] | undefined
 };
 

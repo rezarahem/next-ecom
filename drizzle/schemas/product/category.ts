@@ -2,10 +2,10 @@ import { relations } from 'drizzle-orm';
 import { integer, pgTable, serial, varchar } from 'drizzle-orm/pg-core';
 
 export const Category = pgTable('category', {
-  id: serial().primaryKey(),
-  name: varchar({ length: 50 }).unique().notNull(),
-  addressName: varchar({ length: 50 }).unique().notNull(),
-  parentId: integer(),
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 50 }).unique().notNull(),
+  addressName: varchar('address_name', { length: 50 }).unique().notNull(),
+  parentId: integer('parent_id'),
 });
 
 export const CatRel = relations(Category, ({ one, many }) => ({
@@ -15,6 +15,6 @@ export const CatRel = relations(Category, ({ one, many }) => ({
     relationName: 'catRel',
   }),
   subCat: many(Category, {
-    relationName: 'catRel'
-  })
+    relationName: 'catRel',
+  }),
 }));
