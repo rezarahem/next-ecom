@@ -9,12 +9,12 @@ export const POST = async (req: NextRequest) => {
   const adminAccess = await checkAdminAccess();
 
   if (!adminAccess) {
-    return NextResponse.json({ message: 'دسترسی غیر مجاز' }, { status: 403 });
+    return NextResponse.json({ m: 'دسترسی غیر مجاز' }, { status: 403 });
   }
 
   const { id } = (await req.json()) as { id: number };
 
   await db.delete(Category).where(eq(Category.id, id));
 
-  return NextResponse.json({ message: 'دسته‌بندی حذف شد' }, { status: 200 });
+  return NextResponse.json({ m: 'دسته‌بندی حذف شد' }, { status: 200 });
 };

@@ -27,7 +27,7 @@ export const POST = async (req: NextRequest) => {
   const verifiedFields = PhoneNumberSchema.safeParse(data);
 
   if (!verifiedFields.success) {
-    return NextResponse.json({ message: 'ورودی نامعتبر' }, { status: 404 });
+    return NextResponse.json({ m: 'ورودی نامعتبر' }, { status: 404 });
   }
 
   const user = await db.query.User.findFirst({
@@ -40,7 +40,7 @@ export const POST = async (req: NextRequest) => {
   if (!user) {
     return NextResponse.json(
       {
-        message: 'برای ورود ثبت نام کنید',
+        m: 'برای ورود ثبت نام کنید',
       },
       { status: 202 }
     );
@@ -50,7 +50,7 @@ export const POST = async (req: NextRequest) => {
 
   if (dif) {
     return NextResponse.json({
-      message: 'کد تایید قبلی شما هنوز معتبر است',
+      m: 'کد تایید قبلی شما هنوز معتبر است',
       otpAge: dif,
     });
   }
@@ -69,10 +69,10 @@ export const POST = async (req: NextRequest) => {
 
   if (!res) {
     return NextResponse.json(
-      { message: 'خطا در ارسال کد تایید، دقایقی دیگر تلاش کنید' },
+      { m: 'خطا در ارسال کد تایید، دقایقی دیگر تلاش کنید' },
       { status: 503 }
     );
   }
 
-  return NextResponse.json({ message: 'کد تایید ارسال شد', otpAge: DIF });
+  return NextResponse.json({ m: 'کد تایید ارسال شد', otpAge: DIF });
 };

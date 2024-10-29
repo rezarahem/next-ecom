@@ -4,14 +4,14 @@ type Error = {
   status: number;
   response: {
     data: {
-      message: string;
+      m: string;
     };
   };
 };
 
 export const handleError = (e: Error) => {
-  const { message } = e.response.data;
-  
+  const { m } = e.response.data;
+
   if (!process.env.NEXT_PUBLIC_PRODUCTION) {
     console.log(e);
   }
@@ -19,14 +19,14 @@ export const handleError = (e: Error) => {
   switch (e.status) {
     case 400:
       // درخواست نامعتبر
-      toast.error(message);
+      toast.error(m);
       break;
     case 404:
       // وردی نامعتبر
-      toast.error(message);
+      toast.error(m);
       break;
     case 503:
-      toast.error(message);
+      toast.error(m);
       break;
     case 500:
       toast.error('خطایی سرور، دقایقی دیگر تلاش کنید');

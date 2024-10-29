@@ -2,6 +2,7 @@ import { db } from '@/drizzle/db';
 import { Category } from '@/drizzle/drizzle';
 import { checkAdminAccess } from '@/lib/session';
 import { CategoryFormSchema } from '@/zod/zod';
+import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const POST = async (req: NextRequest) => {
@@ -15,18 +16,18 @@ export const POST = async (req: NextRequest) => {
 
   const verifiedFields = CategoryFormSchema.safeParse(data);
 
-  if (!verifiedFields.success) {
+  if (!verifiedFields.success || !verifiedFields.data.id) {
     return NextResponse.json({ m: 'ورودی نامعتبر' }, { status: 400 });
   }
 
-  const [cat] = await db
-    .insert(Category)
-    .values({
+  await db
+    .update(Category)
+    .set({
       name: verifiedFields.data.name,
       addressName: verifiedFields.data.addressName,
       parentId: verifiedFields.data.parentId,
     })
-    .returning();
+    .where(eq(Category.id, verifiedFields.data.id));
 
-  return NextResponse.json({ m: 'دسته‌بندی ایجاد شد' }, { status: 201 });
+  return NextResponse.json({ m: 'دسته‌بندی بروز شد' }, { status: 200 });
 };

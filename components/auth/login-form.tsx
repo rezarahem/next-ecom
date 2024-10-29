@@ -22,7 +22,7 @@ type LoginFormProp = {
 
 type BackendResType = {
   data: {
-    message: string;
+    m: string;
     otpAge: number;
   };
   status: number;
@@ -88,11 +88,11 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
           case 200:
             setOtpAge(data.otpAge);
             setActiveTemp('otpNumber');
-            toast.success(data.message);
+            toast.success(data.m);
             break;
           case 202:
             setActiveTemp('userName');
-            toast.success(data.message);
+            toast.success(data.m);
             break;
         }
       } catch (error) {
@@ -123,7 +123,7 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
           case 201:
             setOtpAge(data.otpAge);
             setActiveTemp('otpNumber');
-            toast.success(data.message);
+            toast.success(data.m);
             break;
         }
       } catch (error) {
@@ -152,7 +152,7 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
 
         switch (status) {
           case 200:
-            toast.success(data.message);
+            toast.success(data.m);
             router.push(callbackUrl ?? '/');
             break;
         }

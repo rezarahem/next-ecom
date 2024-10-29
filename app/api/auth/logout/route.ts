@@ -3,5 +3,5 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async (req: NextRequest) => {
   await removeCookie();
-  return NextResponse.json({ message: 'ok' });
+  return NextResponse.json({ m: 'ok' });
 };

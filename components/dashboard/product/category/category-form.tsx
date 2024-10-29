@@ -92,18 +92,31 @@ const CategoryFormClient = ({
           return;
         }
 
-        const { data, status } = await axios.post(
-          `${process.env.NEXT_PUBLIC_API}/product/create-category`,
-          validatedField.data
-        );
+        if (currentCat?.id) {
+          const { data, status } = await axios.post(
+            `${process.env.NEXT_PUBLIC_API}/product/update-category`,
+            validatedField.data
+          );
 
-        switch (status) {
-          case 201:
-            toast.success(toastMessage);
-            router.push(
-              `/control/products/categories/${form.getValues('addressName')}`
-            );
-            break;
+          switch (status) {
+            case 200:
+              toast.success(data.m);
+              break;
+          }
+        } else {
+          const { data, status } = await axios.post(
+            `${process.env.NEXT_PUBLIC_API}/product/create-category`,
+            validatedField.data
+          );
+
+          switch (status) {
+            case 201:
+              toast.success(data.m);
+              router.push(
+                `/control/products/categories/${form.getValues('addressName')}`
+              );
+              break;
+          }
         }
       } catch (error) {
         handleError(error as any);

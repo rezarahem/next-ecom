@@ -12,7 +12,7 @@ export const POST = async (req: NextRequest) => {
   const verifiedFields = UserRegisterSchema.safeParse(data);
 
   if (!verifiedFields.success) {
-    return NextResponse.json({ message: 'ورودی نامعتبر' }, { status: 404 });
+    return NextResponse.json({ m: 'ورودی نامعتبر' }, { status: 404 });
   }
 
   const otp = generateOtp();
@@ -28,13 +28,13 @@ export const POST = async (req: NextRequest) => {
 
   if (!res) {
     return NextResponse.json(
-      { message: 'خطا در ارسال کد تایید، دقایقی دیگر تلاش کنید' },
+      { m: 'خطا در ارسال کد تایید، دقایقی دیگر تلاش کنید' },
       { status: 503 }
     );
   }
 
   return NextResponse.json(
-    { message: 'کد تایید ارسال شد', otpAge: +process.env.OTP_AGE! },
+    { m: 'کد تایید ارسال شد', otpAge: +process.env.OTP_AGE! },
     { status: 201 }
   );
 };

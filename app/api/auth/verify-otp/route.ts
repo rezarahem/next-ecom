@@ -22,7 +22,7 @@ export const POST = async (req: NextRequest) => {
   const verifiedFields = OtpSchema.safeParse(data);
 
   if (!verifiedFields.success) {
-    return NextResponse.json({ message: 'ورودی نامعتبر' }, { status: 404 });
+    return NextResponse.json({ m: 'ورودی نامعتبر' }, { status: 404 });
   }
 
   const [userLoginData] = await db
@@ -31,14 +31,14 @@ export const POST = async (req: NextRequest) => {
     .where(eq(User.phone, verifiedFields.data.phoneNumber));
 
   if (!userLoginData || !userLoginData.otp) {
-    return NextResponse.json({ message: 'ورودی نامعتبر' }, { status: 404 });
+    return NextResponse.json({ m: 'ورودی نامعتبر' }, { status: 404 });
   }
 
   const otpAttempt = hasOtpExpired(userLoginData.lastOtpAttempt);
 
   if (!otpAttempt) {
     return NextResponse.json(
-      { message: 'این کد منقضی شده است، مجددا تلاش کنید' },
+      { m: 'این کد منقضی شده است، مجددا تلاش کنید' },
       { status: 404 }
     );
   }
@@ -47,7 +47,7 @@ export const POST = async (req: NextRequest) => {
 
   if (!isOtpMatching) {
     return NextResponse.json(
-      { message: 'کد نامعتبر، مجددا تلاش کنید' },
+      { m: 'کد نامعتبر، مجددا تلاش کنید' },
       { status: 404 }
     );
   }
@@ -61,7 +61,7 @@ export const POST = async (req: NextRequest) => {
     })
     .where(eq(User.id, userLoginData.id));
 
-  return NextResponse.json({ message: 'ورود موفق' });
+  return NextResponse.json({ m: 'ورود موفق' });
 
   // login
 };
