@@ -1,12 +1,12 @@
 import { db } from '@/drizzle/db';
 import { Category } from '@/drizzle/drizzle';
-import { checkAdminAccess } from '@/lib/session';
+import { adminAccess } from '@/lib/session';
 import { CategoryFormSchema } from '@/zod/zod';
 import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const POST = async (req: NextRequest) => {
-  const adminAccess = await checkAdminAccess();
+  const adminAccess = await adminAccess();
 
   if (!adminAccess) {
     return NextResponse.json({ m: 'دسترسی غیر مجاز' }, { status: 403 });

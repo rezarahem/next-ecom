@@ -32,7 +32,7 @@ export const getSeesion = async (): Promise<SessionTypes> => {
   return user;
 };
 
-export const checkAdminAccess = async (): Promise<SessionTypes> => {
+export const adminAccess = async (): Promise<SessionTypes> => {
   const user = await getSeesion();
   return user ? user : null;
 };
