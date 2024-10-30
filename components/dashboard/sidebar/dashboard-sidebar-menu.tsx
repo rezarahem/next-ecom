@@ -28,10 +28,10 @@ type DashboardSidebarMenuProps = {
 
 export function DashboardSidebarMenu({ menus }: DashboardSidebarMenuProps) {
   const [, , firstSeg, secondSeg] = usePathname().split('/');
-  const { toggleSidebar, isMobile, open } = useSidebar();
+  const { toggleSidebar, isMobile } = useSidebar();
 
   const handleCloseOnMobile = () => {
-    if (open && isMobile) {
+    if (isMobile) {
       toggleSidebar();
     }
   };
