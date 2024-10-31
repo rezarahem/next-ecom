@@ -1,5 +1,7 @@
+import Container from '@/components/ui/container';
+
 const Products = () => {
-  return <div>products</div>;
+  return <Container>products</Container>;
 };
 
 export default Products;

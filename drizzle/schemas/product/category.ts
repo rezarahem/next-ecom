@@ -12,9 +12,9 @@ export const CatRel = relations(Category, ({ one, many }) => ({
   parentCat: one(Category, {
     fields: [Category.parentId],
     references: [Category.id],
-    relationName: 'catRel',
+    relationName: 'cat_rel',
   }),
   subCat: many(Category, {
-    relationName: 'catRel',
+    relationName: 'cat_rel',
   }),
 }));
