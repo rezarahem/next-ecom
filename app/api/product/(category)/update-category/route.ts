@@ -6,9 +6,9 @@ import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const POST = async (req: NextRequest) => {
-  const adminAccess = await adminAccess();
+  const admin = await adminAccess();
 
-  if (!adminAccess) {
+  if (!admin) {
     return NextResponse.json({ m: 'دسترسی غیر مجاز' }, { status: 403 });
   }
 
