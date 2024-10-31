@@ -49,6 +49,7 @@ import toast from 'react-hot-toast';
 import { handleError } from '@/lib/handle-error';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import AlertModal from '@/components/ui/alert-modal';
 
 type CategoryFormClientProps = {
   currentCat: CategoryType | undefined;
@@ -150,31 +151,22 @@ const CategoryFormClient = ({
 
   return (
     <>
+      <AlertModal
+        isOpne={openAlertModal}
+        onClose={() => setOpenAlertModal(false)}
+        onConfirm={onDelete}
+        loading={pending}
+      />
       <div className='flex items-center justify-between'>
         <Heading title={title} description={description} />
-        <AlertDialog>
-          {currentCat && (
-            <AlertDialogTrigger asChild>
-              <Button disabled={pending} variant='destructive' size='icon'>
-                <Trash className='size-4' />
-              </Button>
-            </AlertDialogTrigger>
-          )}
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className='text-right'>
-                از انجام این عملیات اطمینان دارید؟
-              </AlertDialogTitle>
-              <AlertDialogDescription className='text-right'>
-                این عمل غیر قابل بازگشت است
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter className='gap-2'>
-              <AlertDialogCancel>کنسل</AlertDialogCancel>
-              <AlertDialogAction onClick={onDelete}>ادامه</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        {currentCat && (
+          <Button
+            onClick={() => setOpenAlertModal(true)}
+            variant='destructive'
+            size='icon'>
+            <Trash className='size-4' />
+          </Button>
+        )}
       </div>
       <Separator className='my-7' />
       <Form {...form}>

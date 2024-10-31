@@ -5,20 +5,10 @@ import { handleError } from '@/lib/handle-error';
 import axios from 'axios';
 import { Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import toast from 'react-hot-toast';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import { useRouter } from 'next/navigation';
+import AlertModal from '@/components/ui/alert-modal';
 
 type CategoryChipProps = {
   cat: {
@@ -31,6 +21,7 @@ type CategoryChipProps = {
 
 const CategoryChip = ({ cat }: CategoryChipProps) => {
   const [pending, startTransition] = useTransition();
+  const [openAlertModal, setOpenAlertModal] = useState(false);
   const router = useRouter();
 
   const onDelete = () => {
@@ -64,27 +55,19 @@ const CategoryChip = ({ cat }: CategoryChipProps) => {
             <Pencil />
           </Link>
         </Button>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button disabled={pending} size='icon' variant='secondary'>
-              <Trash2 />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className='text-right'>
-                از انجام این عملیات اطمینان دارید؟
-              </AlertDialogTitle>
-              <AlertDialogDescription className='text-right'>
-                این عمل غیر قابل بازگشت است
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter className='gap-2'>
-              <AlertDialogCancel>کنسل</AlertDialogCancel>
-              <AlertDialogAction onClick={onDelete}>ادامه</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <Button
+          onClick={() => setOpenAlertModal(true)}
+          disabled={pending}
+          size='icon'
+          variant='secondary'>
+          <Trash2 />
+        </Button>
+        <AlertModal
+          isOpne={openAlertModal}
+          onClose={() => setOpenAlertModal(false)}
+          onConfirm={onDelete}
+          loading={pending}
+        />
       </div>
     </div>
   );
