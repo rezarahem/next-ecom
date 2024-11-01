@@ -12,11 +12,11 @@ const DashboardLayout = async ({
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get('sidebar:state')?.value === 'true';
 
-  const user = await getSeesion();
+  const session = await getSeesion();
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <DashboardSidebar user={user} />
+      <DashboardSidebar user={session} />
       <div className='w-full grid min-h-dvh grid-rows-[auto_1fr]'>
         <DashboardNavbar />
         {children}

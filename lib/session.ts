@@ -36,3 +36,17 @@ export const adminAccess = async (): Promise<SessionTypes> => {
   const user = await getSeesion();
   return user ? user : null;
 };
+
+export const userAceess = async (roles: string[]): Promise<SessionTypes> => {
+  const user = await getSeesion();
+
+  if (!user) return null;
+
+  const userRoles = [user.role];
+
+  const hasAccess = userRoles.some(r => roles.includes(r));
+
+  if (!hasAccess) return null;
+
+  return user;
+};
