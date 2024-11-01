@@ -1,13 +1,15 @@
 import { db } from '@/drizzle/db';
 import { Category } from '@/drizzle/drizzle';
-import { adminAccess } from '@/lib/session';
+import { userAceess } from '@/lib/session';
 import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const POST = async (req: NextRequest) => {
-  const admin = await adminAccess();
+const roles: string[] = ['admin'];
 
-  if (!admin) {
+export const POST = async (req: NextRequest) => {
+  const user = await userAceess(roles);
+
+  if (!user) {
     return NextResponse.json({ m: 'دسترسی غیر مجاز' }, { status: 403 });
   }
 
