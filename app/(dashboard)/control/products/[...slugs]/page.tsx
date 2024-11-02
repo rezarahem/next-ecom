@@ -11,10 +11,7 @@ type Params = Promise<{ slugs: string[] }>;
 const ProductPage = async ({ params }: { params: Params }) => {
   const { slugs } = await params;
 
-  const checkIfTheRightParamsWerePassesd =
-    /[a-zA-Zآابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی]/.test(slugs[0]);
-
-  if (checkIfTheRightParamsWerePassesd) notFound();
+  if (slugs.length > 2) notFound();
 
   const user = await userAceess(roles);
   if (!user) redirect(redirectUrl);

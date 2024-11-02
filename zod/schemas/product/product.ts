@@ -3,6 +3,7 @@ import * as z from 'zod';
 
 export const ProductFormSchema = z
   .object({
+    id: z.number().optional(),
     name: z
       .string()
       .min(1, 'ثبت عنوان محصول الزامی است')
@@ -23,21 +24,25 @@ export const ProductFormSchema = z
         }
       )
       .transform(value => value.split(' ').join('-')),
-    desc: z.string().optional(),
+    desc: z.string(),
     price: z
-      .string({ required_error: 'ثبت قیمت الزامی است' })
+      .string()
       .min(6, 'حداقل قیمت مجاز ۱۰,۰۰۰ تومان می‌باشد')
+      .nullable()
       .refine(
-        value => !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیa-zA-Z]/gmu.test(value),
+        value =>
+          !value || !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیa-zA-Z]/gmu.test(value),
         {
           message: 'حروف غیر مجاز است',
         }
       )
-      .refine(value => value[0] !== '۰', 'مقدار غیر مجاز')
-      .transform(value => toEnglishNumberStr(removeComma(value))),
+      .refine(value => !value || value[0] !== '۰', 'مقدار غیر مجاز')
+      .transform(value =>
+        value ? +toEnglishNumberStr(removeComma(value)) : null
+      ),
     discount: z
       .string()
-      .optional()
+      .nullable()
       .refine(
         value =>
           !value || !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیa-zA-Z]/gmu.test(value),
@@ -47,11 +52,11 @@ export const ProductFormSchema = z
       )
       .refine(value => !value || value[0] !== '۰', 'مقدار غیر مجاز')
       .transform(value =>
-        value ? toEnglishNumberStr(removeComma(value)) : value
+        value ? +toEnglishNumberStr(removeComma(value)) : null
       ),
     inventory: z
       .string()
-      .optional()
+      .nullable()
       .refine(
         value =>
           !value || !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیa-zA-Z]/gmu.test(value),
@@ -63,10 +68,12 @@ export const ProductFormSchema = z
         value => !value || value.length < 2 || value[0] !== '۰',
         'مقدار غیر مجاز'
       )
-      .transform(value => !value || toEnglishNumberStr(removeComma(value))),
+      .transform(value =>
+        value ? +toEnglishNumberStr(removeComma(value)) : null
+      ),
     buyLimit: z
       .string()
-      .optional()
+      .nullable()
       .refine(
         value =>
           !value || !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیa-zA-Z]/gmu.test(value),
@@ -75,8 +82,10 @@ export const ProductFormSchema = z
         }
       )
       .refine(value => !value || value[0] !== '۰', 'مقدار غیر مجاز')
-      .transform(value => !value || toEnglishNumberStr(removeComma(value))),
-    thumb: z.string().optional(),
+      .transform(value =>
+        value ? +toEnglishNumberStr(removeComma(value)) : null
+      ),
+    thumb: z.string(),
     isActive: z.boolean(),
   })
   .superRefine(

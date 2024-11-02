@@ -1,5 +1,5 @@
 'use client';
-import { CategoryType } from '@/drizzle/db-query/category';
+// import { CategoryType } from '@/drizzle/db-query/category';
 import { CategoryFormSchema } from '@/zod/zod';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
@@ -14,17 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -50,6 +39,7 @@ import { handleError } from '@/lib/handle-error';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import AlertModal from '@/components/ui/alert-modal';
+import { CategoryType } from '@/drizzle/drizzle';
 
 type CategoryFormClientProps = {
   currentCat: CategoryType | undefined;
@@ -67,11 +57,10 @@ const CategoryFormClient = ({
   const [openCombobox, setOpenCombobox] = useState(false);
   const router = useRouter();
 
-  const title = currentCat ? 'ویرایش دسته‌بندی' : 'ایجاد دسته‌بندی';
+  const title = currentCat ? 'ویرایش دسته‌بندی' : 'افزودن دسته‌بندی';
   const description =
-    currentCat ? 'مدیریت و ویرایش دسته‌بندی' : 'یک دسته‌بندی جدید ایجاد کنید';
-  const toastMessage = currentCat ? 'دسته‌بندی بروز شد' : 'دسته‌بندی ایجاد شد';
-  const action = currentCat ? 'ذخیره تغییرات' : 'ایجاد';
+    currentCat ? 'مدیریت و ویرایش دسته‌بندی' : 'یک دسته‌بندی جدید بسازید';
+  const action = currentCat ? 'بروزرسانی' : 'افزودن';
 
   const form = useForm<Form>({
     resolver: zodResolver(CategoryFormSchema),
