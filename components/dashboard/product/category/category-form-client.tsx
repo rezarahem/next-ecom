@@ -62,14 +62,16 @@ const CategoryFormClient = ({
     currentCat ? 'مدیریت و ویرایش دسته‌بندی' : 'یک دسته‌بندی جدید بسازید';
   const action = currentCat ? 'بروزرسانی' : 'افزودن';
 
+  const defaultValues = {
+    id: currentCat?.id,
+    name: currentCat?.name ?? '',
+    addressName: currentCat?.addressName.split('-').join(' ') ?? '',
+    parentId: currentCat?.parentId ?? null,
+  } satisfies Form;
+
   const form = useForm<Form>({
     resolver: zodResolver(CategoryFormSchema),
-    defaultValues: {
-      id: currentCat?.id,
-      name: currentCat?.name ?? '',
-      addressName: currentCat?.addressName.split('-').join(' ') ?? '',
-      parentId: currentCat?.parentId ?? undefined,
-    },
+    defaultValues,
   });
 
   const onSubmit = (formData: Form) => {
@@ -239,7 +241,7 @@ const CategoryFormClient = ({
                                       setOpenCombobox(prev => !prev);
                                     }, 25);
                                   } else {
-                                    form.setValue('parentId', undefined);
+                                    form.setValue('parentId', null);
                                   }
                                 }}>
                                 {c.name}

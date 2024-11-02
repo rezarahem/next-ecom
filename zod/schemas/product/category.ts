@@ -19,5 +19,5 @@ export const CategoryFormSchema = z.object({
       message: 'حروف فارسی غیر مجاز است',
     })
     .transform(v => v.split(' ').join('-')),
-  parentId: z.number().optional(),
+  parentId: z.number().nullable(),
 });
