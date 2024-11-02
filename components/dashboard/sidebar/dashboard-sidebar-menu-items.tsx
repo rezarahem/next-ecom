@@ -2,7 +2,7 @@ import 'server-only';
 import { JSX } from 'react';
 import { PackageSearch, Settings2 } from 'lucide-react';
 
-type Access = 'user' | 'admin';
+type Access = 'admin' | 'user';
 
 export type DashboardSidebarMenuItemsTypes = {
   id: number;

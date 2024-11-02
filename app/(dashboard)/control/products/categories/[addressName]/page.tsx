@@ -1,4 +1,4 @@
-import CategoryFormClient from '@/components/dashboard/product/category/category-form';
+import CategoryFormClient from '@/components/dashboard/product/category/category-form-client';
 import Container from '@/components/ui/container';
 import {
   getAllCats,
