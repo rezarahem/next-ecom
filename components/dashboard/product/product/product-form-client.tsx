@@ -74,19 +74,6 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     shouldFocusError: true,
   });
 
-  // const formState = useFormState({
-  //   control: form.control,
-  // });
-
-  useEffect(() => {
-    const firstInputErr = Object.keys(
-      form.formState.errors
-    )[0] as keyof typeof form.formState.errors;
-
-    if (firstInputErr && form.formState.errors[firstInputErr]?.ref) {
-    }
-  }, [form.formState.errors, form]);
-
   const onSubmit = (formData: Form) => {
     startTransition(async () => {
       try {
@@ -213,7 +200,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
               name='isActive'
               render={({ field }) => (
                 <FormItem>
-                  <div className='flex items-center justify-between gap-2'>
+                  <div className='flex items-center justify-between'>
                     <FormLabel>وضعیت</FormLabel>
                     <FormControl>
                       <span dir='ltr'>
