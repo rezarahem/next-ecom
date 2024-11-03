@@ -159,7 +159,7 @@ const CategoryFormClient = ({
           </Button>
         )}
       </div>
-      <Separator className='my-7' />
+      <Separator className='my-8' />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
           <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
@@ -185,7 +185,7 @@ const CategoryFormClient = ({
               name='addressName'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>آدرس دسته‌بندی</FormLabel>
+                  <FormLabel>اسلاگ</FormLabel>
                   <FormControl>
                     <Input
                       disabled={pending}

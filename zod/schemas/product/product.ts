@@ -24,10 +24,8 @@ export const ProductFormSchema = z
         }
       )
       .transform(value => value.split(' ').join('-')),
-    desc: z.string(),
     price: z
       .string()
-      .min(6, 'حداقل قیمت مجاز ۱۰,۰۰۰ تومان می‌باشد')
       .nullable()
       .refine(
         value =>
@@ -37,8 +35,12 @@ export const ProductFormSchema = z
         }
       )
       .refine(value => !value || value[0] !== '۰', 'مقدار غیر مجاز')
+      .refine(
+        value => !value || +toEnglishNumberStr(removeComma(value)) > 10000,
+        'حداقل قیمت مجاز ۱۰,۰۰۰ تومان می‌باشد'
+      )
       .transform(value =>
-        value ? +toEnglishNumberStr(removeComma(value)) : null
+        value ? toEnglishNumberStr(removeComma(value)) : ''
       ),
     discount: z
       .string()
@@ -52,7 +54,7 @@ export const ProductFormSchema = z
       )
       .refine(value => !value || value[0] !== '۰', 'مقدار غیر مجاز')
       .transform(value =>
-        value ? +toEnglishNumberStr(removeComma(value)) : null
+        value ? toEnglishNumberStr(removeComma(value)) : ''
       ),
     inventory: z
       .string()
@@ -69,7 +71,7 @@ export const ProductFormSchema = z
         'مقدار غیر مجاز'
       )
       .transform(value =>
-        value ? +toEnglishNumberStr(removeComma(value)) : null
+        value ? toEnglishNumberStr(removeComma(value)) : ''
       ),
     buyLimit: z
       .string()
@@ -83,18 +85,19 @@ export const ProductFormSchema = z
       )
       .refine(value => !value || value[0] !== '۰', 'مقدار غیر مجاز')
       .transform(value =>
-        value ? +toEnglishNumberStr(removeComma(value)) : null
+        value ? toEnglishNumberStr(removeComma(value)) : ''
       ),
-    thumb: z.string(),
+    // thumb: z.string(),
     isActive: z.boolean(),
+    desc: z.string(),
   })
   .superRefine(
     (
-      { isActive, inventory, buyLimit, price, thumb, discount },
+      { isActive, inventory, buyLimit, price, discount },
       { addIssue, path }
     ) => {
       if (isActive) {
-        const requiredFields = { inventory, buyLimit, price, thumb };
+        const requiredFields = { inventory, buyLimit, price };
 
         const requiredKeys = Object.keys(
           requiredFields
