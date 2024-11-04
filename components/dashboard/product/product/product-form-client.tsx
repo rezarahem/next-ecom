@@ -48,11 +48,13 @@ type FormFields =
 const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const [pending, startTransition] = useTransition();
   const [openAlertModal, setOpenAlertModal] = useState(false);
+
   const router = useRouter();
 
   const title = current ? 'ویرایش محصول' : 'افزودن محصول';
-  const description =
-    current ? 'مدیریت و ویرایش محصول' : 'یک محصول جدید بسازید';
+  const description = current
+    ? 'مدیریت و ویرایش محصول'
+    : 'یک محصول جدید بسازید';
   const action = current ? 'بروزرسانی' : 'افزودن';
 
   const defaultValues = {
@@ -94,159 +96,173 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const onDelete = () => {};
 
   return (
-    <>
-      <AlertModal
-        isOpne={openAlertModal}
-        onClose={() => setOpenAlertModal(false)}
-        onConfirm={onDelete}
-        loading={pending}
-      />
-      <div className='flex items-center justify-between'>
-        <Heading title={title} description={description} />
-        {current && (
-          <Button
-            disabled={pending}
-            variant='destructive'
-            size='icon'
-            onClick={() => setOpenAlertModal(true)}>
-            <Trash className='size-4' />
-          </Button>
-        )}
+    <div className='grid gap-3 md:grid-cols-[1fr_auto]'>
+      <div>
+        <div>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit,
+          veniam. Ut molestiae culpa saepe labore quam ab minus sunt, recusandae
+          accusantium iure tempora id mollitia. Error magni vitae dignissimos
+          asperiores.
+        </div>
       </div>
-      <Separator className='my-8' />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-          <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
-            <FormField
-              control={form.control}
-              name='name'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>نام محصول</FormLabel>
-                  <FormControl>
-                    <Input disabled={pending} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='addressName'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>اسلاگ</FormLabel>
-                  <FormControl>
-                    <Input disabled={pending} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='price'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>قیمت</FormLabel>
-                  <FormControl>
-                    <Input disabled={pending} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='discount'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>تخفیف</FormLabel>
-                  <FormControl>
-                    <Input disabled={pending} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='inventory'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>موجودی</FormLabel>
-                  <FormControl>
-                    <Input disabled={pending} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='buyLimit'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>محدودیت سبد خرید</FormLabel>
-                  <FormControl>
-                    <Input disabled={pending} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='isActive'
-              render={({ field }) => (
-                <FormItem>
-                  <div className='flex items-center justify-between'>
-                    <FormLabel>وضعیت</FormLabel>
-                    <FormControl>
-                      <span dir='ltr'>
-                        <Switch
-                          className='translate-y-1'
-                          checked={field.value}
-                          onCheckedChange={value => {
-                            field.onChange(value);
-                            form.trigger();
-                          }}
-                        />
-                      </span>
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div>
-            <FormField
-              control={form.control}
-              name='desc'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>توضیحات</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      className='resize-none'
-                      disabled={pending}
-                      rows={5}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button disabled={pending} className='ml-auto' type='submit'>
-            {action}
-          </Button>
-        </form>
-      </Form>
-    </>
+      <div className='md:h-[calc(100lvh-96px)] md:w-72 md:border-r lg:w-96'></div>
+    </div>
   );
 };
 
 export default ProductFormClient;
+
+// return (
+//   <>
+//     <AlertModal
+//       isOpne={openAlertModal}
+//       onClose={() => setOpenAlertModal(false)}
+//       onConfirm={onDelete}
+//       loading={pending}
+//     />
+//     <div className='flex items-center justify-between'>
+//       <Heading title={title} description={description} />
+//       {current && (
+//         <Button
+//           disabled={pending}
+//           variant='destructive'
+//           size='icon'
+//           onClick={() => setOpenAlertModal(true)}>
+//           <Trash className='size-4' />
+//         </Button>
+//       )}
+//     </div>
+//     <Separator className='my-8' />
+//     <Form {...form}>
+//       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+//         <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
+//           <FormField
+//             control={form.control}
+//             name='name'
+//             render={({ field }) => (
+//               <FormItem>
+//                 <FormLabel>نام محصول</FormLabel>
+//                 <FormControl>
+//                   <Input disabled={pending} {...field} />
+//                 </FormControl>
+//                 <FormMessage />
+//               </FormItem>
+//             )}
+//           />
+//           <FormField
+//             control={form.control}
+//             name='addressName'
+//             render={({ field }) => (
+//               <FormItem>
+//                 <FormLabel>اسلاگ</FormLabel>
+//                 <FormControl>
+//                   <Input disabled={pending} {...field} />
+//                 </FormControl>
+//                 <FormMessage />
+//               </FormItem>
+//             )}
+//           />
+//           <FormField
+//             control={form.control}
+//             name='price'
+//             render={({ field }) => (
+//               <FormItem>
+//                 <FormLabel>قیمت</FormLabel>
+//                 <FormControl>
+//                   <Input disabled={pending} {...field} />
+//                 </FormControl>
+//                 <FormMessage />
+//               </FormItem>
+//             )}
+//           />
+//           <FormField
+//             control={form.control}
+//             name='discount'
+//             render={({ field }) => (
+//               <FormItem>
+//                 <FormLabel>تخفیف</FormLabel>
+//                 <FormControl>
+//                   <Input disabled={pending} {...field} />
+//                 </FormControl>
+//                 <FormMessage />
+//               </FormItem>
+//             )}
+//           />
+//           <FormField
+//             control={form.control}
+//             name='inventory'
+//             render={({ field }) => (
+//               <FormItem>
+//                 <FormLabel>موجودی</FormLabel>
+//                 <FormControl>
+//                   <Input disabled={pending} {...field} />
+//                 </FormControl>
+//                 <FormMessage />
+//               </FormItem>
+//             )}
+//           />
+//           <FormField
+//             control={form.control}
+//             name='buyLimit'
+//             render={({ field }) => (
+//               <FormItem>
+//                 <FormLabel>محدودیت سبد خرید</FormLabel>
+//                 <FormControl>
+//                   <Input disabled={pending} {...field} />
+//                 </FormControl>
+//                 <FormMessage />
+//               </FormItem>
+//             )}
+//           />
+//           <FormField
+//             control={form.control}
+//             name='isActive'
+//             render={({ field }) => (
+//               <FormItem>
+//                 <div className='flex items-center justify-between'>
+//                   <FormLabel>وضعیت</FormLabel>
+//                   <FormControl>
+//                     <span dir='ltr'>
+//                       <Switch
+//                         className='translate-y-1'
+//                         checked={field.value}
+//                         onCheckedChange={value => {
+//                           field.onChange(value);
+//                           form.trigger();
+//                         }}
+//                       />
+//                     </span>
+//                   </FormControl>
+//                 </div>
+//                 <FormMessage />
+//               </FormItem>
+//             )}
+//           />
+//         </div>
+//         <div>
+//           <FormField
+//             control={form.control}
+//             name='desc'
+//             render={({ field }) => (
+//               <FormItem>
+//                 <FormLabel>توضیحات</FormLabel>
+//                 <FormControl>
+//                   <Textarea
+//                     className='resize-none'
+//                     disabled={pending}
+//                     rows={5}
+//                     {...field}
+//                   />
+//                 </FormControl>
+//                 <FormMessage />
+//               </FormItem>
+//             )}
+//           />
+//         </div>
+//         <Button disabled={pending} className='ml-auto' type='submit'>
+//           {action}
+//         </Button>
+//       </form>
+//     </Form>
+//   </>
+// );
