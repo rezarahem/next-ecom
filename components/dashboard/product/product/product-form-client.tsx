@@ -1,5 +1,9 @@
 'use client';
 
+import {
+  dashboardNavbarOffset,
+  dashboardSecondarySidebarStickOffset,
+} from '@/global-styles/css-sizes';
 import AlertModal from '@/components/ui/alert-modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,6 +30,8 @@ import { useEffect, useState, useTransition } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
+import { space } from 'postcss/lib/list';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type ProductFormClientProps = {
   current: ProductType | undefined;
@@ -96,17 +102,149 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const onDelete = () => {};
 
   return (
-    <div className='grid gap-3 md:grid-cols-[1fr_auto]'>
-      <div>
-        <div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit,
-          veniam. Ut molestiae culpa saepe labore quam ab minus sunt, recusandae
-          accusantium iure tempora id mollitia. Error magni vitae dignissimos
-          asperiores.
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className='grid gap-2 md:grid-cols-[1fr_auto]'
+      >
+        <div></div>
+        <div
+          className={`sticky top-[${dashboardSecondarySidebarStickOffset}px] md:h-[calc(100lvh-${dashboardNavbarOffset}px)] px-3 md:w-72 md:border-r lg:w-96`}
+        >
+          <div className='flex flex-col gap-2 rounded-md border p-2'>
+            <FormField
+              control={form.control}
+              name='isActive'
+              render={({ field }) => (
+                <FormItem>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex items-center gap-1'>
+                      <FormLabel>وضعیت انتشار</FormLabel>
+                      <FormDescription className='rounded-sm rounded-s border p-[2px]'>
+                        {form.getValues('isActive') ? (
+                          <span>انتشار</span>
+                        ) : (
+                          <span>پیش‌نویس</span>
+                        )}
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <span dir='ltr'>
+                        <Switch
+                          className='translate-y-1'
+                          checked={field.value}
+                          onCheckedChange={(value) => {
+                            field.onChange(value);
+                            form.trigger();
+                          }}
+                        />
+                      </span>
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button disabled={pending} className='mr-auto' type='submit'>
+              {action}
+            </Button>
+          </div>
+          <Separator className='my-3' />
+          <p className='mb-1 font-semibold'>دسته‌بندی</p>
+          <ScrollArea
+            dir='rtl'
+            className='h-[calc(100%-170px)] overflow-hidden rounded-md border p-2'
+          >
+            <div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
+                non temporibus necessitatibus numquam similique. Neque inventore
+                veritatis iure non molestias unde animi sequi laborum odio
+                tempora nisi iste, esse magnam!
+              </div>
+            </div>
+          </ScrollArea>
         </div>
-      </div>
-      <div className='md:h-[calc(100lvh-96px)] md:w-72 md:border-r lg:w-96'></div>
-    </div>
+      </form>
+    </Form>
   );
 };
 
