@@ -111,15 +111,17 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
         <div
           className={`sticky top-[${dashboardSecondarySidebarStickOffset}px] md:h-[calc(100lvh-${dashboardNavbarOffset}px)] px-3 md:w-72 md:border-r lg:w-96`}
         >
-          <div className='flex flex-col gap-2 rounded-md border p-2'>
+          <div className='fixed bottom-0 z-50 flex w-full justify-between gap-2 p-2 max-md:translate-x-6 max-md:items-center max-md:border-t max-md:bg-primary-foreground md:static md:flex-col md:rounded-md md:border'>
             <FormField
               control={form.control}
               name='isActive'
               render={({ field }) => (
                 <FormItem>
-                  <div className='flex items-center justify-between'>
+                  <div className='flex items-center justify-between max-md:flex-row-reverse max-md:gap-2'>
                     <div className='flex items-center gap-1'>
-                      <FormLabel>وضعیت انتشار</FormLabel>
+                      <FormLabel className='max-md:hidden'>
+                        وضعیت انتشار
+                      </FormLabel>
                       <FormDescription className='rounded-sm rounded-s border p-[2px]'>
                         {form.getValues('isActive') ? (
                           <span>انتشار</span>
@@ -141,15 +143,17 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                       </span>
                     </FormControl>
                   </div>
-                  <FormMessage />
+                  <div className='max-md:hidden'>
+                    <FormMessage />
+                  </div>
                 </FormItem>
               )}
             />
-            <Button disabled={pending} className='mr-auto' type='submit'>
+            <Button disabled={pending} className='md:mr-auto' type='submit'>
               {action}
             </Button>
           </div>
-          <Separator className='my-3' />
+          <Separator className='my-3 hidden md:block' />
           <p className='mb-1 font-semibold'>دسته‌بندی</p>
           <ScrollArea
             dir='rtl'
