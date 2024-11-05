@@ -23,12 +23,21 @@ import { ProductFormSchema } from '@/zod/zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Divide, ImagePlus, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useTransition } from 'react';
+import {
+  useEffect,
+  useState,
+  useTransition,
+  ChangeEvent,
+  useCallback,
+} from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { ProductImgArrSchema } from '@/zod/schemas/product/product';
+import { vector } from 'drizzle-orm/pg-core';
+import axios from 'axios';
 
 type ProductFormClientProps = {
   current: ProductType | undefined;
@@ -79,9 +88,53 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     shouldFocusError: true,
   });
 
-  const upload = () => {};
+  const onInputChang = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-  const onDrop = () => {};
+    if (!e.target.files) return;
+
+    upload(Array.from(e.target.files));
+  };
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    upload(acceptedFiles);
+  }, []);
+
+  const upload = (d: any) => {
+    startTransition(async () => {
+      try {
+        const validatedFields = ProductImgArrSchema.safeParse(d);
+
+        if (!validatedFields.success) {
+          const errorArray = validatedFields.error.errors;
+          form.setError('images', {
+            message: errorArray[errorArray.length - 1].message,
+          });
+          return;
+        }
+
+        const formData = new FormData();
+
+        validatedFields.data.forEach((file) => {
+          formData.append('images', file);
+        });
+
+        const { data, status } = await axios.post(
+          `${process.env.NEXT_PUBLIC_API}/file/upload`,
+          formData,
+        );
+
+        switch (status) {
+          case 200:
+            toast.success(data.m);
+            break;
+        }
+      } catch (error) {
+        handleError(error as any);
+      }
+    });
+  };
 
   const { getRootProps, getInputProps, isDragActive, isFocused } = useDropzone({
     onDrop,
@@ -248,7 +301,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                             {...getInputProps()}
                             type='file'
                             multiple
-                            // onChange={handleInputFileOnChange}
+                            onChange={onInputChang}
                             disabled={pending}
                             hidden
                           />
@@ -260,6 +313,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                         </label>
                       </div>
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

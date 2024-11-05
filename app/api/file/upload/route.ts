@@ -14,15 +14,11 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ m: 'دسترسی غیر مجاز' }, { status: 403 });
   }
 
-  const data = (await req.json()) as FormData;
+  const data = await req.formData();
 
-  const filesArr: File[] = [];
+  const filesArr = data.getAll('images') as File[];
 
-  data.values().forEach((file) => {
-    if (file instanceof File) {
-      filesArr.push(file);
-    }
-  });
+  // return NextResponse.json({ m: true });
 
   const validatedFields = ProductImgArrSchema.safeParse(filesArr);
 
