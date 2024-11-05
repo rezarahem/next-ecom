@@ -8,7 +8,7 @@ export const ProductFormSchema = z
       .string()
       .min(1, 'ثبت عنوان محصول الزامی است')
       .min(3, 'نام کالا حداقل باید ۳ حرف باشد')
-      .refine(value => !/[\/\\{}\[\]<>+?؟!!@#$%^&*`'";:,٫~]/gmu.test(value), {
+      .refine((value) => !/[\/\\{}\[\]<>+?؟!!@#$%^&*`'";:,٫~]/gmu.test(value), {
         message: `حروف غیر مجاز (\\/[]{}<>+?,:;'"\`!@#$%^&*؟!٫)`,
       }),
     addressName: z
@@ -17,93 +17,100 @@ export const ProductFormSchema = z
       .min(3, 'آدرس محصول حداقل باید ۳ حرف باشد')
       .toLowerCase()
       .refine(
-        value =>
+        (value) =>
           !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی۰۱۲۳۴۵۶۷۸۹]/gmu.test(value),
         {
           message: 'حروف و اعداد فارسی غیر مجاز است',
-        }
+        },
       )
-      .transform(value => value.split(' ').join('-')),
+      .transform((value) => value.split(' ').join('-')),
     price: z
       .string()
       .nullable()
       .refine(
-        value =>
+        (value) =>
           !value || !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیa-zA-Z]/gmu.test(value),
         {
           message: 'حروف غیر مجاز است',
-        }
+        },
       )
-      .refine(value => !value || value[0] !== '۰', 'مقدار غیر مجاز')
+      .refine((value) => !value || value[0] !== '۰', 'مقدار غیر مجاز')
       .refine(
-        value => !value || +toEnglishNumberStr(removeComma(value)) > 10000,
-        'حداقل قیمت مجاز ۱۰,۰۰۰ تومان می‌باشد'
+        (value) => !value || +toEnglishNumberStr(removeComma(value)) > 10000,
+        'حداقل قیمت مجاز ۱۰,۰۰۰ تومان می‌باشد',
       )
-      .transform(value =>
-        value ? toEnglishNumberStr(removeComma(value)) : ''
+      .transform((value) =>
+        value ? toEnglishNumberStr(removeComma(value)) : '',
       ),
     discount: z
       .string()
       .nullable()
       .refine(
-        value =>
+        (value) =>
           !value || !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیa-zA-Z]/gmu.test(value),
         {
           message: 'مقدار غیر مجاز',
-        }
+        },
       )
-      .refine(value => !value || value[0] !== '۰', 'مقدار غیر مجاز')
-      .transform(value =>
-        value ? toEnglishNumberStr(removeComma(value)) : ''
+      .refine((value) => !value || value[0] !== '۰', 'مقدار غیر مجاز')
+      .transform((value) =>
+        value ? toEnglishNumberStr(removeComma(value)) : '',
       ),
     inventory: z
       .string()
       .nullable()
       .refine(
-        value =>
+        (value) =>
           !value || !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیa-zA-Z]/gmu.test(value),
         {
           message: 'حروف غیر مجاز',
-        }
+        },
       )
       .refine(
-        value => !value || value.length < 2 || value[0] !== '۰',
-        'مقدار غیر مجاز'
+        (value) => !value || value.length < 2 || value[0] !== '۰',
+        'مقدار غیر مجاز',
       )
-      .transform(value =>
-        value ? toEnglishNumberStr(removeComma(value)) : ''
+      .transform((value) =>
+        value ? toEnglishNumberStr(removeComma(value)) : '',
       ),
     buyLimit: z
       .string()
       .nullable()
       .refine(
-        value =>
+        (value) =>
           !value || !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیa-zA-Z]/gmu.test(value),
         {
           message: 'حروف غیر مجاز',
-        }
+        },
       )
-      .refine(value => !value || value[0] !== '۰', 'مقدار غیر مجاز')
-      .transform(value =>
-        value ? toEnglishNumberStr(removeComma(value)) : ''
+      .refine((value) => !value || value[0] !== '۰', 'مقدار غیر مجاز')
+      .transform((value) =>
+        value ? toEnglishNumberStr(removeComma(value)) : '',
       ),
-    // thumb: z.string(),
     isActive: z.boolean(),
     desc: z.string(),
+    thumb: z.string(),
+    images: z
+      .object({
+        id: z.number(),
+        url: z.string(),
+      })
+      .array()
+      .min(1, 'آپلود حداقل یک تصویر الزامی است'),
   })
   .superRefine(
     (
-      { isActive, inventory, buyLimit, price, discount },
-      { addIssue, path }
+      { isActive, inventory, buyLimit, price, discount, thumb },
+      { addIssue, path },
     ) => {
       if (isActive) {
-        const requiredFields = { inventory, buyLimit, price };
+        const requiredFields = { inventory, buyLimit, price, thumb };
 
         const requiredKeys = Object.keys(
-          requiredFields
+          requiredFields,
         ) as (keyof typeof requiredFields)[];
 
-        requiredKeys.forEach(key => {
+        requiredKeys.forEach((key) => {
           if (!requiredFields[key]) {
             addIssue({
               code: 'custom',
@@ -113,7 +120,7 @@ export const ProductFormSchema = z
           }
         });
 
-        if (requiredKeys.some(key => !requiredFields[key])) {
+        if (requiredKeys.some((key) => !requiredFields[key])) {
           addIssue({
             code: 'custom',
             message: 'برای انتشار فیلد‌های الزامی را پر کنید',
@@ -147,5 +154,19 @@ export const ProductFormSchema = z
           return z.NEVER;
         }
       }
-    }
+    },
   );
+
+export const ProductImgSchema = z
+  .instanceof(File)
+  .refine((file) => file.size <= 1 * 1024 * 1024, {
+    message: 'حجم فایل نباید بیش از ۱ مگابایت باشد',
+  })
+  .refine(
+    (file) => ['image/jpeg', 'image/jpg', 'image/png'].includes(file.type),
+    {
+      message: 'نوع فایل باید PNG یا JPG باشد',
+    },
+  );
+
+export const ProductImgArrSchema = z.array(ProductImgSchema);

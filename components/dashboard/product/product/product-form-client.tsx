@@ -11,6 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { useDropzone } from 'react-dropzone';
 import Heading from '@/components/ui/heading';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -20,13 +21,12 @@ import { CategoryType, ProductType } from '@/drizzle/drizzle';
 import { handleError } from '@/lib/handle-error';
 import { ProductFormSchema } from '@/zod/zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Divide, Trash } from 'lucide-react';
+import { Divide, ImagePlus, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
-import { space } from 'postcss/lib/list';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
@@ -51,9 +51,8 @@ type FormFields =
 const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const [pending, startTransition] = useTransition();
   const [openAlertModal, setOpenAlertModal] = useState(false);
-
+  const [thumb, setThumb] = useState(current?.thumb ?? '');
   const router = useRouter();
-
   const title = current ? 'ویرایش محصول' : 'افزودن محصول';
   const description = current
     ? 'مدیریت و ویرایش محصول'
@@ -70,13 +69,23 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     inventory: current?.inventory?.toString() ?? '',
     buyLimit: current?.buyLimit?.toString() ?? '',
     isActive: current?.isActive ?? false,
-    // thumb: current?.thumb ?? '',
+    thumb: current?.thumb ?? '',
+    images: [],
   } satisfies Form;
 
   const form = useForm<Form>({
     resolver: zodResolver(ProductFormSchema),
     defaultValues,
     shouldFocusError: true,
+  });
+
+  const upload = () => {};
+
+  const onDrop = () => {};
+
+  const { getRootProps, getInputProps, isDragActive, isFocused } = useDropzone({
+    onDrop,
+    multiple: true,
   });
 
   const onSubmit = (formData: Form) => {
@@ -109,9 +118,9 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='grid gap-2 md:grid-cols-[1fr_auto]'
+          className='grid gap-4 md:grid-cols-[1fr_auto]'
         >
-          <div className=''>
+          <div>
             <div className='grid gap-4 sm:grid-cols-2 md:gap-8 lg:grid-cols-3'>
               <FormField
                 control={form.control}
@@ -212,7 +221,49 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                 )}
               />
             </div>
-            <Separator />
+            <div>
+              <FormField
+                control={form.control}
+                name='images'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>تصاویر</FormLabel>
+                    <FormControl>
+                      <div
+                        {...getRootProps({
+                          onClick: (e) => {
+                            e.preventDefault();
+                          },
+                        })}
+                      >
+                        <label
+                          className={cn(
+                            'flex cursor-pointer items-center justify-center rounded border-2 border-dashed py-20 hover:opacity-60',
+                            {
+                              'border-blue-500': isDragActive,
+                            },
+                          )}
+                        >
+                          <input
+                            {...getInputProps()}
+                            type='file'
+                            multiple
+                            // onChange={handleInputFileOnChange}
+                            disabled={pending}
+                            hidden
+                          />
+                          <ImagePlus
+                            className={cn('size-4', {
+                              'text-blue-500': isDragActive,
+                            })}
+                          />
+                        </label>
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           <div className='sticky top-[76px] md:h-[calc(100lvh-96px)] md:w-72 md:border-r md:px-3 lg:w-96'>
             <div className='fixed bottom-0 z-50 flex w-full justify-between gap-2 p-2 max-md:translate-x-3 max-md:translate-y-px max-md:items-center max-md:border-t max-md:bg-primary-foreground md:static md:flex-col md:rounded-md md:border'>
