@@ -1,3 +1,5 @@
+import { db } from '@/drizzle/db';
+import { File as FileTable } from '@/drizzle/drizzle';
 import { s3Upload } from '@/lib/s3';
 import { userAceess } from '@/lib/session';
 import { ProductImgArrSchema } from '@/zod/schemas/product/product';
@@ -28,12 +30,19 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ m: 'ورودی نامعتبر' }, { status: 400 });
   }
 
-  const urls: string[] = [];
-  
+  const urls: { url: string }[] = [];
+
   for (const file of filesArr) {
     try {
       const url = await s3Upload(file);
-      if (url) urls.push(url);
+      if (url) urls.push({ url });
     } catch (error) {}
   }
+
+  const images = await db.insert(FileTable).values(urls).returning();
+
+  return NextResponse.json(
+    { m: 'آپلود با موفقیت به اتمام رسید', images },
+    { status: 200 },
+  );
 };
