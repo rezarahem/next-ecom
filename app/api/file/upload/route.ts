@@ -18,8 +18,6 @@ export const POST = async (req: NextRequest) => {
 
   const filesArr = data.getAll('images') as File[];
 
-  // return NextResponse.json({ m: true });
-
   const validatedFields = ProductImgArrSchema.safeParse(filesArr);
 
   if (!validatedFields.success) {

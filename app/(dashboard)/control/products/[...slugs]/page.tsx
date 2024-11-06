@@ -14,6 +14,7 @@ const ProductPage = async ({ params }: { params: Params }) => {
   if (slugs.length > 2) notFound();
 
   const user = await userAceess(roles);
+  
   if (!user) redirect(redirectUrl);
 
   return (

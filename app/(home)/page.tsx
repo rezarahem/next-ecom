@@ -1,15 +1,9 @@
-'use client';
+// 'use client';
 
-import { Button } from '@/components/ui/button';
-import axios from 'axios';
+import Link from 'next/link';
 
 const HomePage = () => {
-  const logout = async () => {
-    // await Logout();
-    await axios.get(`${process.env.NEXT_PUBLIC_API}/auth/update-session`);
-  };
-
-  return <Button onClick={logout}>logout</Button>;
+  return <Link href='/tet/123/تست-اسلاگ-فارسی'>test</Link>;
 };
 
 export default HomePage;
