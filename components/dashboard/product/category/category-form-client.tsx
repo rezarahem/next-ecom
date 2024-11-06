@@ -58,14 +58,14 @@ const CategoryFormClient = ({
   const router = useRouter();
 
   const title = currentCat ? 'ویرایش دسته‌بندی' : 'افزودن دسته‌بندی';
-  const description =
-    currentCat ? 'مدیریت و ویرایش دسته‌بندی' : 'یک دسته‌بندی جدید بسازید';
+  const description = currentCat
+    ? 'مدیریت و ویرایش دسته‌بندی'
+    : 'یک دسته‌بندی جدید بسازید';
   const action = currentCat ? 'بروزرسانی' : 'افزودن';
 
   const defaultValues = {
     id: currentCat?.id,
     name: currentCat?.name ?? '',
-    addressName: currentCat?.addressName.split('-').join(' ') ?? '',
     parentId: currentCat?.parentId ?? null,
   } satisfies Form;
 
@@ -87,7 +87,7 @@ const CategoryFormClient = ({
         if (currentCat?.id) {
           const { data, status } = await axios.post(
             `${process.env.NEXT_PUBLIC_API}/product/update-category`,
-            validatedField.data
+            validatedField.data,
           );
 
           switch (status) {
@@ -98,14 +98,14 @@ const CategoryFormClient = ({
         } else {
           const { data, status } = await axios.post(
             `${process.env.NEXT_PUBLIC_API}/product/create-category`,
-            validatedField.data
+            validatedField.data,
           );
 
           switch (status) {
             case 201:
               toast.success(data.m);
               router.push(
-                `/control/products/categories/${form.getValues('addressName')}`
+                `/control/products/categories/${form.getValues('name')}`,
               );
               break;
           }
@@ -125,7 +125,7 @@ const CategoryFormClient = ({
           `${process.env.NEXT_PUBLIC_API}/product/delete-category`,
           {
             id,
-          }
+          },
         );
 
         switch (status) {
@@ -154,7 +154,8 @@ const CategoryFormClient = ({
           <Button
             onClick={() => setOpenAlertModal(true)}
             variant='destructive'
-            size='icon'>
+            size='icon'
+          >
             <Trash className='size-4' />
           </Button>
         )}
@@ -182,23 +183,6 @@ const CategoryFormClient = ({
             />
             <FormField
               control={form.control}
-              name='addressName'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>اسلاگ</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={pending}
-                      placeholder='آدرس دسته‌بندی'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name='parentId'
               render={({ field }) => (
                 <FormItem className='flex flex-col justify-start'>
@@ -213,10 +197,11 @@ const CategoryFormClient = ({
                           role='combobox'
                           className={cn('justify-between', {
                             'font-normal text-muted-foreground': !field.value,
-                          })}>
-                          {field.value ?
-                            allCats.find(c => c.id === field.value)?.name
-                          : 'انتخاب کنید'}
+                          })}
+                        >
+                          {field.value
+                            ? allCats.find((c) => c.id === field.value)?.name
+                            : 'انتخاب کنید'}
                           <CaretSortIcon className='-ml-2 size-4 shrink-0 opacity-90' />
                         </Button>
                       </FormControl>
@@ -227,7 +212,7 @@ const CategoryFormClient = ({
                         <CommandEmpty>نتیجه یافت نشد</CommandEmpty>
                         <CommandGroup>
                           <CommandList>
-                            {allCats.map(c => (
+                            {allCats.map((c) => (
                               <CommandItem
                                 value={c.name}
                                 key={c.id}
@@ -238,19 +223,20 @@ const CategoryFormClient = ({
                                   ) {
                                     form.setValue('parentId', c.id);
                                     setTimeout(() => {
-                                      setOpenCombobox(prev => !prev);
+                                      setOpenCombobox((prev) => !prev);
                                     }, 25);
                                   } else {
                                     form.setValue('parentId', null);
                                   }
-                                }}>
+                                }}
+                              >
                                 {c.name}
                                 <CheckIcon
                                   className={cn(
                                     'mr-auto h-4 w-4',
-                                    c.id === field.value ?
-                                      'opacity-100'
-                                    : 'opacity-0'
+                                    c.id === field.value
+                                      ? 'opacity-100'
+                                      : 'opacity-0',
                                   )}
                                 />
                               </CommandItem>

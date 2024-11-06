@@ -71,7 +71,6 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const defaultValues = {
     id: current?.id,
     name: current?.name ?? '',
-    addressName: current?.addressName ?? '',
     desc: current?.desc ?? '',
     price: current?.price?.toString() ?? '',
     discount: current?.discount?.toString() ?? '',
@@ -181,19 +180,6 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>نام محصول</FormLabel>
-                    <FormControl>
-                      <Input disabled={pending} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='addressName'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>اسلاگ</FormLabel>
                     <FormControl>
                       <Input disabled={pending} {...field} />
                     </FormControl>

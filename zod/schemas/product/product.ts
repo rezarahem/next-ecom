@@ -11,19 +11,19 @@ export const ProductFormSchema = z
       .refine((value) => !/[\/\\{}\[\]<>+?؟!!@#$%^&*`'";:,٫~]/gmu.test(value), {
         message: `حروف غیر مجاز (\\/[]{}<>+?,:;'"\`!@#$%^&*؟!٫)`,
       }),
-    addressName: z
-      .string()
-      .min(1, 'ثبت آدرس محصول الزامی است')
-      .min(3, 'آدرس محصول حداقل باید ۳ حرف باشد')
-      .toLowerCase()
-      .refine(
-        (value) =>
-          !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی۰۱۲۳۴۵۶۷۸۹]/gmu.test(value),
-        {
-          message: 'حروف و اعداد فارسی غیر مجاز است',
-        },
-      )
-      .transform((value) => value.split(' ').join('-')),
+    // addressName: z
+    //   .string()
+    //   .min(1, 'ثبت آدرس محصول الزامی است')
+    //   .min(3, 'آدرس محصول حداقل باید ۳ حرف باشد')
+    //   .toLowerCase()
+    //   .refine(
+    //     (value) =>
+    //       !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی۰۱۲۳۴۵۶۷۸۹]/gmu.test(value),
+    //     {
+    //       message: 'حروف و اعداد فارسی غیر مجاز است',
+    //     },
+    //   )
+    //   .transform((value) => value.split(' ').join('-')),
     price: z
       .string()
       .nullable()
