@@ -7,7 +7,8 @@ export const CategoryFormSchema = z.object({
     .min(2, 'نام دسته‌بندی باید حداقل ۲ حرف باشد')
     .refine((v) => !/[\/\\{}\[\]<>+?؟!!@#$%^&*`'";:,٫~]/gmu.test(v), {
       message: `حروف غیر مجاز (\\/[]{}<>+?,:;'"\`!@#$%^&*؟!٫)`,
-    }),
+    })
+    .transform((v) => v.trim()),
   // addressName: z
   //   .string({ required_error: 'الزامی' })
   //   .toLowerCase()

@@ -9,12 +9,12 @@ import { useState, useTransition } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import AlertModal from '@/components/ui/alert-modal';
+import { addDash } from '@/lib/persian-string';
 
 type CategoryChipProps = {
   cat: {
     id: number;
     name: string;
-    addressName: string;
     parentId: number | null;
   };
 };
@@ -31,7 +31,7 @@ const CategoryChip = ({ cat }: CategoryChipProps) => {
           `${process.env.NEXT_PUBLIC_API}/product/delete-category`,
           {
             id: cat.id,
-          }
+          },
         );
 
         switch (status) {
@@ -47,19 +47,20 @@ const CategoryChip = ({ cat }: CategoryChipProps) => {
   };
 
   return (
-    <div className='rounded-lg flex gap-2 items-center border p-2'>
+    <div className='flex items-center gap-2 rounded-lg border p-2'>
       <div>{cat.name}</div>
       <div className='flex gap-2'>
-        <Button disabled={pending} size='icon' variant='secondary'>
-          <Link href={`/control/products/categories/${cat.addressName}`}>
+        <Link href={`/control/products/categories/${addDash(cat.name)}`}>
+          <Button disabled={pending} size='icon' variant='secondary'>
             <Pencil />
-          </Link>
-        </Button>
+          </Button>
+        </Link>
         <Button
           onClick={() => setOpenAlertModal(true)}
           disabled={pending}
           size='icon'
-          variant='secondary'>
+          variant='secondary'
+        >
           <Trash2 />
         </Button>
         <AlertModal

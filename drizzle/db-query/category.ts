@@ -9,16 +9,16 @@ export const getAllCats = async (): Promise<CategoryType[]> => {
   return await db.query.Category.findMany();
 };
 
-export const getCategoryByAddressName = async (
-  addressName: string
+export const getCategoryByName = async (
+  name: string,
 ): Promise<CategoryType | undefined> => {
   return await db.query.Category.findFirst({
-    where: eq(Category.addressName, addressName),
+    where: eq(Category.name, name),
   });
 };
 
 export const getCatsExcludeTree = async (
-  treeId: number
+  treeId: number,
 ): Promise<CategoryType[]> => {
   const data = await db.execute(
     sql`
@@ -26,7 +26,6 @@ export const getCatsExcludeTree = async (
       SELECT
         id,
         name,
-        address_name,
         parent_id
       FROM
         ${Category}
@@ -36,7 +35,6 @@ export const getCatsExcludeTree = async (
       SELECT
         c.id,
         c.name,
-        c.address_name,
         c.parent_id
       FROM
         ${Category} c
@@ -45,13 +43,12 @@ export const getCatsExcludeTree = async (
       SELECT
         id,
         name,
-        address_name AS "addressName",
         parent_id AS "parentId"
       FROM
         ${Category}
       WHERE
         id NOT IN (SELECT id FROM excluded_category_tree);
-      `
+      `,
   );
 
   return data.rows as CategoryType[];

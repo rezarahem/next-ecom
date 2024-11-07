@@ -26,7 +26,6 @@ export const POST = async (req: NextRequest) => {
     .update(Category)
     .set({
       name: verifiedFields.data.name,
-      addressName: verifiedFields.data.addressName,
       parentId: verifiedFields.data.parentId,
     })
     .where(eq(Category.id, verifiedFields.data.id));

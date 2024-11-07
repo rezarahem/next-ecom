@@ -40,6 +40,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import AlertModal from '@/components/ui/alert-modal';
 import { CategoryType } from '@/drizzle/drizzle';
+import { addDash } from '@/lib/persian-string';
 
 type CategoryFormClientProps = {
   currentCat: CategoryType | undefined;
@@ -93,6 +94,9 @@ const CategoryFormClient = ({
           switch (status) {
             case 200:
               toast.success(data.m);
+              router.replace(
+                `/control/products/categories/${addDash(form.getValues('name'))}`,
+              );
               break;
           }
         } else {
@@ -105,7 +109,7 @@ const CategoryFormClient = ({
             case 201:
               toast.success(data.m);
               router.push(
-                `/control/products/categories/${form.getValues('name')}`,
+                `/control/products/categories/${addDash(form.getValues('name'))}`,
               );
               break;
           }

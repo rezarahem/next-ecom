@@ -25,7 +25,6 @@ export const POST = async (req: NextRequest) => {
     .insert(Category)
     .values({
       name: verifiedFields.data.name,
-      addressName: verifiedFields.data.addressName,
       parentId: verifiedFields.data.parentId,
     })
     .returning();

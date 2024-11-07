@@ -49,7 +49,6 @@ type Form = z.infer<typeof ProductFormSchema>;
 type FormFields =
   | 'id'
   | 'name'
-  | 'addressName'
   | 'desc'
   | 'price'
   | 'discount'
