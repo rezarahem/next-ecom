@@ -30,7 +30,7 @@ import {
   ChangeEvent,
   useCallback,
 } from 'react';
-import { useForm, useFormState } from 'react-hook-form';
+import { useForm, useFormState, useWatch } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -45,16 +45,6 @@ type ProductFormClientProps = {
 };
 
 type Form = z.infer<typeof ProductFormSchema>;
-
-type FormFields =
-  | 'id'
-  | 'name'
-  | 'desc'
-  | 'price'
-  | 'discount'
-  | 'inventory'
-  | 'buyLimit'
-  | 'isActive';
 
 const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const [pending, startTransition] = useTransition();
@@ -83,10 +73,42 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const form = useForm<Form>({
     resolver: zodResolver(ProductFormSchema),
     defaultValues,
-    shouldFocusError: true,
   });
 
-  const onInputChang = (e: ChangeEvent<HTMLInputElement>) => {
+  const {
+    control,
+    register,
+    formState: { errors },
+  } = form;
+
+  // const [isActive, price, inventory, buyLimit] = useWatch({
+  //   control,
+  //   name: ['isActive', 'price', 'inventory', 'buyLimit'],
+  // });
+
+  // useEffect(() => {
+  //   // if (isActive && !price) {
+  //   //   form.setError('price', { message: 'فیلد الزامی برای انتشار' });
+  //   // }
+
+  //   console.log(form.formState.errors);
+  // }, [form]);
+
+  // const checkPupValidation = () => {
+  //   const { isActive, price, buyLimit, inventory } = form.getValues();
+
+  //   if (isActive && !price) {
+  //     form.setError('price', { message: 'فیلد الزامی انتشار' });
+  //   }
+  // };
+
+  // const checkIsActiveStat = () => {
+  //   if (form.getValues('isActive') && form.formState.isValid) {
+  //     form.clearErrors('isActive');
+  //   }
+  // };
+
+  const onFileInputChang = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -193,7 +215,14 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                   <FormItem>
                     <FormLabel>قیمت</FormLabel>
                     <FormControl>
-                      <Input disabled={pending} {...field} />
+                      <Input
+                        disabled={pending}
+                        {...field}
+                        {...register('price', {
+                          validate: () =>
+                            form.getValues('isActive') ? true : false,
+                        })}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -286,7 +315,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                             {...getInputProps()}
                             type='file'
                             multiple
-                            onChange={onInputChang}
+                            onChange={onFileInputChang}
                             disabled={pending}
                             hidden
                           />
@@ -329,10 +358,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                           <Switch
                             className='translate-y-1'
                             checked={field.value}
-                            onCheckedChange={(value) => {
-                              field.onChange(value);
-                              form.trigger();
-                            }}
+                            onCheckedChange={field.onChange}
                           />
                         </span>
                       </FormControl>

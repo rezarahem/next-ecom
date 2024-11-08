@@ -1,4 +1,5 @@
 import { removeComma, toEnglishNumberStr } from '@/lib/persian-string';
+import { isCancel } from 'axios';
 import * as z from 'zod';
 
 export const ProductFormSchema = z
@@ -10,20 +11,8 @@ export const ProductFormSchema = z
       .min(3, 'نام کالا حداقل باید ۳ حرف باشد')
       .refine((value) => !/[\/\\{}\[\]<>+?؟!!@#$%^&*`'";:,٫~]/gmu.test(value), {
         message: `حروف غیر مجاز (\\/[]{}<>+?,:;'"\`!@#$%^&*؟!٫)`,
-      }),
-    // addressName: z
-    //   .string()
-    //   .min(1, 'ثبت آدرس محصول الزامی است')
-    //   .min(3, 'آدرس محصول حداقل باید ۳ حرف باشد')
-    //   .toLowerCase()
-    //   .refine(
-    //     (value) =>
-    //       !/[آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی۰۱۲۳۴۵۶۷۸۹]/gmu.test(value),
-    //     {
-    //       message: 'حروف و اعداد فارسی غیر مجاز است',
-    //     },
-    //   )
-    //   .transform((value) => value.split(' ').join('-')),
+      })
+      .transform((v) => v.trim()),
     price: z
       .string()
       .nullable()
@@ -95,8 +84,8 @@ export const ProductFormSchema = z
         id: z.number(),
         url: z.string(),
       })
-      .array()
-      .min(1, 'آپلود حداقل یک تصویر الزامی است'),
+      .array(),
+    // .min(1, 'آپلود حداقل یک تصویر الزامی است'),
   })
   .superRefine(
     (
@@ -104,7 +93,7 @@ export const ProductFormSchema = z
       { addIssue, path },
     ) => {
       if (isActive) {
-        const requiredFields = { inventory, buyLimit, price, thumb };
+        const requiredFields = { inventory, buyLimit, price };
 
         const requiredKeys = Object.keys(
           requiredFields,
@@ -112,30 +101,64 @@ export const ProductFormSchema = z
 
         requiredKeys.forEach((key) => {
           if (!requiredFields[key]) {
-            addIssue({
-              code: 'custom',
-              message: 'فیلد الزامی برای انتشار',
-              path: [key],
-            });
+            switch (key) {
+              // case 'thumb':
+              //   addIssue({
+              //     code: 'custom',
+              //     message: 'فیلد الزامی برای انتشار',
+              //     path: ['images'],
+              //   });
+              //   break;
+              default:
+                addIssue({
+                  code: 'custom',
+                  message: 'فیلد الزامی برای انتشار',
+                  path: [key],
+                  // fatal: true,
+                });
+                break;
+            }
           }
         });
 
-        if (requiredKeys.some((key) => !requiredFields[key])) {
-          addIssue({
-            code: 'custom',
-            message: 'برای انتشار فیلد‌های الزامی را پر کنید',
-            path: ['isActive'],
-            fatal: true,
-          });
-          return z.NEVER;
-        }
+        // if (requiredKeys.some((key) => !requiredFields[key])) {
+        //   addIssue({
+        //     code: 'custom',
+        //     message: 'برای انتشار فیلد‌های الزامی را پر کنید',
+        //     path: ['isActive'],
+        //     fatal: true,
+        //   });
+        //   return z.NEVER;
+        // }
+      }
+
+      if (isActive && !price) {
+        addIssue({
+          code: 'custom',
+          message: 'فیلد الزامی برای انتشار',
+          path: ['price'],
+          fatal: true,
+        });
+
+        return z.NEVER;
+      }
+
+      if (discount && !price) {
+        addIssue({
+          code: 'custom',
+          message: 'لطفا قیمت را ثبت کنید',
+          path: ['discount'],
+          fatal: true,
+        });
+
+        return z.NEVER;
       }
 
       if (price && discount) {
         if (+discount > +price) {
           addIssue({
             code: 'custom',
-            message: 'قیمت ویژه نباید بزرگتر از قیمت اصلی باشد.',
+            message: 'قیمت ویژه نباید بزرگتر از قیمت اصلی باشد',
             path: ['discount'],
             fatal: true,
           });
@@ -146,7 +169,7 @@ export const ProductFormSchema = z
         if (+discount === +price) {
           addIssue({
             code: 'custom',
-            message: 'قیمت ویژه نباید برابر قیمت اصلی باشد.',
+            message: 'قیمت ویژه نباید برابر قیمت اصلی باشد',
             path: ['discount'],
             fatal: true,
           });
