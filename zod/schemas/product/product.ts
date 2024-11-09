@@ -104,7 +104,7 @@ export const ProductFormSchema = z
               case 'thumb':
                 addIssue({
                   code: 'custom',
-                  message: 'فیلد الزامی برای انتشار',
+                  message: 'انتخاب تصویر کاور برای انتشار الزامی است',
                   path: ['images'],
                 });
                 break;

@@ -21,7 +21,13 @@ import { CategoryType, ProductType } from '@/drizzle/drizzle';
 import { handleError } from '@/lib/handle-error';
 import { ProductFormSchema } from '@/zod/zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Divide, FlagTriangleRight, ImagePlus, Trash } from 'lucide-react';
+import {
+  Divide,
+  FlagTriangleRight,
+  ImagePlus,
+  Loader2,
+  Trash,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import {
   useEffect,
@@ -49,6 +55,10 @@ type Form = z.infer<typeof ProductFormSchema>;
 const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const [pending, startTransition] = useTransition();
   const [openAlertModal, setOpenAlertModal] = useState(false);
+  const [deleteImage, setDeleteImage] = useState<{
+    id: number;
+    url: string;
+  } | null>(null);
   const [thumb, setThumb] = useState(current?.thumb ?? '');
   const router = useRouter();
   const title = current ? 'ویرایش محصول' : 'افزودن محصول';
@@ -153,7 +163,37 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     });
   };
 
-  const onDelete = () => {};
+  const onDelete = () => {
+    setOpenAlertModal(false);
+    startTransition(async () => {
+      try {
+        if (deleteImage?.id) {
+          const { data, status } = await axios.post(
+            `${process.env.NEXT_PUBLIC_API}/file/delete`,
+            deleteImage,
+          );
+
+          switch (status) {
+            case 200:
+              form.setValue(
+                'images',
+                form
+                  .getValues('images')
+                  .filter((img) => img.id !== data.image.id),
+              );
+              toast.success(data.m);
+              break;
+
+            default:
+              break;
+          }
+        } else {
+        }
+      } catch (error) {
+        handleError(error as any);
+      }
+    });
+  };
 
   return (
     <>
@@ -263,7 +303,6 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>تصاویر</FormLabel>
-                    <FormMessage />
                     <FormControl>
                       <div className='space-y-5'>
                         <div
@@ -275,8 +314,10 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                         >
                           <label
                             className={cn(
-                              'flex cursor-pointer items-center justify-center rounded border-2 border-dashed py-20 hover:opacity-60',
+                              'flex items-center justify-center rounded border-2 border-dashed py-20',
                               {
+                                'cursor-pointer hover:opacity-60': !pending,
+                                'cursor-not-allowed opacity-50': pending,
                                 'border-blue-500': isDragActive,
                               },
                             )}
@@ -291,11 +332,14 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                             />
                             <ImagePlus
                               className={cn('size-4', {
-                                'text-blue-500': isDragActive,
+                                'text-blue-500': isDragActive && !pending,
                               })}
                             />
                           </label>
                         </div>
+
+                        <FormMessage />
+
                         {field.value.length > 0 && (
                           <div className='grid grid-cols-2 gap-4 lg:grid-cols-6'>
                             {field.value.map(({ id, url }) => (
@@ -309,13 +353,14 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                                     size='icon'
                                     type='button'
                                     disabled={pending}
-                                    // onClick={(e) => {
-                                    //   e.preventDefault();
-                                    //   onDeleteProductImage({
-                                    //     id,
-                                    //     url,
-                                    //   });
-                                    // }}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setOpenAlertModal(true);
+                                      setDeleteImage({
+                                        id,
+                                        url,
+                                      });
+                                    }}
                                   >
                                     <Trash className='size-4' />
                                   </Button>
@@ -407,6 +452,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                     disabled={pending}
                     variant='destructive'
                     size='icon'
+                    type='button'
                     onClick={() => setOpenAlertModal(true)}
                   >
                     <Trash className='size-4' />
@@ -415,6 +461,11 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
 
                 <Button disabled={pending} className='md:mr-auto' type='submit'>
                   {action}
+                  {pending && (
+                    <span className='-translate-x-px -translate-y-px'>
+                      <Loader2 className='animate-spin' />
+                    </span>
+                  )}
                 </Button>
               </div>
             </div>
