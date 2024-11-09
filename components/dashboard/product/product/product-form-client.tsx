@@ -1,5 +1,5 @@
 'use client';
-
+import Image from 'next/image';
 import AlertModal from '@/components/ui/alert-modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,7 +21,7 @@ import { CategoryType, ProductType } from '@/drizzle/drizzle';
 import { handleError } from '@/lib/handle-error';
 import { ProductFormSchema } from '@/zod/zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Divide, ImagePlus, Trash } from 'lucide-react';
+import { Divide, FlagTriangleRight, ImagePlus, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import {
   useEffect,
@@ -57,6 +57,15 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     : 'یک محصول جدید بسازید';
   const action = current ? 'بروزرسانی' : 'افزودن';
 
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    upload(acceptedFiles);
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive, isFocused } = useDropzone({
+    onDrop,
+    multiple: true,
+  });
+
   const defaultValues = {
     id: current?.id,
     name: current?.name ?? '',
@@ -75,39 +84,6 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     defaultValues,
   });
 
-  const {
-    control,
-    register,
-    formState: { errors },
-  } = form;
-
-  // const [isActive, price, inventory, buyLimit] = useWatch({
-  //   control,
-  //   name: ['isActive', 'price', 'inventory', 'buyLimit'],
-  // });
-
-  // useEffect(() => {
-  //   // if (isActive && !price) {
-  //   //   form.setError('price', { message: 'فیلد الزامی برای انتشار' });
-  //   // }
-
-  //   console.log(form.formState.errors);
-  // }, [form]);
-
-  // const checkPupValidation = () => {
-  //   const { isActive, price, buyLimit, inventory } = form.getValues();
-
-  //   if (isActive && !price) {
-  //     form.setError('price', { message: 'فیلد الزامی انتشار' });
-  //   }
-  // };
-
-  // const checkIsActiveStat = () => {
-  //   if (form.getValues('isActive') && form.formState.isValid) {
-  //     form.clearErrors('isActive');
-  //   }
-  // };
-
   const onFileInputChang = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -117,13 +93,11 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     upload(Array.from(e.target.files));
   };
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    upload(acceptedFiles);
-  }, []);
-
   const upload = (d: any) => {
     startTransition(async () => {
       try {
+        form.clearErrors('images');
+
         const validatedFields = ProductImgArrSchema.safeParse(d);
 
         if (!validatedFields.success) {
@@ -147,19 +121,20 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
 
         switch (status) {
           case 200:
+            form.setValue('images', [
+              ...form.getValues('images'),
+              ...data.images,
+            ]);
             toast.success(data.m);
             break;
         }
+
+        console.log(form.getValues('images'));
       } catch (error) {
         handleError(error as any);
       }
     });
   };
-
-  const { getRootProps, getInputProps, isDragActive, isFocused } = useDropzone({
-    onDrop,
-    multiple: true,
-  });
 
   const onSubmit = (formData: Form) => {
     startTransition(async () => {
@@ -215,14 +190,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                   <FormItem>
                     <FormLabel>قیمت</FormLabel>
                     <FormControl>
-                      <Input
-                        disabled={pending}
-                        {...field}
-                        {...register('price', {
-                          validate: () =>
-                            form.getValues('isActive') ? true : false,
-                        })}
-                      />
+                      <Input disabled={pending} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -295,39 +263,103 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>تصاویر</FormLabel>
+                    <FormMessage />
                     <FormControl>
-                      <div
-                        {...getRootProps({
-                          onClick: (e) => {
-                            e.preventDefault();
-                          },
-                        })}
-                      >
-                        <label
-                          className={cn(
-                            'flex cursor-pointer items-center justify-center rounded border-2 border-dashed py-20 hover:opacity-60',
-                            {
-                              'border-blue-500': isDragActive,
+                      <div className='space-y-5'>
+                        <div
+                          {...getRootProps({
+                            onClick: (e) => {
+                              e.preventDefault();
                             },
-                          )}
+                          })}
                         >
-                          <input
-                            {...getInputProps()}
-                            type='file'
-                            multiple
-                            onChange={onFileInputChang}
-                            disabled={pending}
-                            hidden
-                          />
-                          <ImagePlus
-                            className={cn('size-4', {
-                              'text-blue-500': isDragActive,
-                            })}
-                          />
-                        </label>
+                          <label
+                            className={cn(
+                              'flex cursor-pointer items-center justify-center rounded border-2 border-dashed py-20 hover:opacity-60',
+                              {
+                                'border-blue-500': isDragActive,
+                              },
+                            )}
+                          >
+                            <input
+                              {...getInputProps()}
+                              type='file'
+                              multiple
+                              onChange={onFileInputChang}
+                              disabled={pending}
+                              hidden
+                            />
+                            <ImagePlus
+                              className={cn('size-4', {
+                                'text-blue-500': isDragActive,
+                              })}
+                            />
+                          </label>
+                        </div>
+                        {field.value.length > 0 && (
+                          <div className='grid grid-cols-2 gap-4 lg:grid-cols-6'>
+                            {field.value.map(({ id, url }) => (
+                              <div
+                                key={id}
+                                className='relative aspect-square overflow-hidden rounded-md'
+                              >
+                                <div className='absolute left-2 top-2 z-10'>
+                                  <Button
+                                    variant='destructive'
+                                    size='icon'
+                                    type='button'
+                                    disabled={pending}
+                                    // onClick={(e) => {
+                                    //   e.preventDefault();
+                                    //   onDeleteProductImage({
+                                    //     id,
+                                    //     url,
+                                    //   });
+                                    // }}
+                                  >
+                                    <Trash className='size-4' />
+                                  </Button>
+                                </div>
+                                <div className='absolute left-12 top-2 z-10'>
+                                  <Button
+                                    size='icon'
+                                    type='button'
+                                    disabled={pending}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      if (form.getValues('thumb') === url) {
+                                        setThumb('');
+                                        form.setValue('thumb', '');
+                                      } else {
+                                        setThumb(url);
+                                        form.setValue('thumb', url);
+                                      }
+                                    }}
+                                    className={cn(
+                                      'bg-gray-400 text-slate-700 hover:bg-gray-300',
+                                      {
+                                        'bg-green-500 text-white hover:bg-green-400 hover:text-white':
+                                          thumb === url,
+                                      },
+                                    )}
+                                  >
+                                    <FlagTriangleRight className='siz-4' />
+                                  </Button>
+                                </div>
+                                <Image
+                                  alt='Image'
+                                  src={url}
+                                  fill
+                                  priority={true}
+                                  sizes='100vw'
+                                  className='object-cover'
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />

@@ -85,7 +85,6 @@ export const ProductFormSchema = z
         url: z.string(),
       })
       .array(),
-    // .min(1, 'آپلود حداقل یک تصویر الزامی است'),
   })
   .superRefine(
     (
@@ -93,7 +92,7 @@ export const ProductFormSchema = z
       { addIssue, path },
     ) => {
       if (isActive) {
-        const requiredFields = { inventory, buyLimit, price };
+        const requiredFields = { inventory, buyLimit, price, thumb };
 
         const requiredKeys = Object.keys(
           requiredFields,
@@ -102,13 +101,13 @@ export const ProductFormSchema = z
         requiredKeys.forEach((key) => {
           if (!requiredFields[key]) {
             switch (key) {
-              // case 'thumb':
-              //   addIssue({
-              //     code: 'custom',
-              //     message: 'فیلد الزامی برای انتشار',
-              //     path: ['images'],
-              //   });
-              //   break;
+              case 'thumb':
+                addIssue({
+                  code: 'custom',
+                  message: 'فیلد الزامی برای انتشار',
+                  path: ['images'],
+                });
+                break;
               default:
                 addIssue({
                   code: 'custom',
@@ -120,16 +119,6 @@ export const ProductFormSchema = z
             }
           }
         });
-
-        // if (requiredKeys.some((key) => !requiredFields[key])) {
-        //   addIssue({
-        //     code: 'custom',
-        //     message: 'برای انتشار فیلد‌های الزامی را پر کنید',
-        //     path: ['isActive'],
-        //     fatal: true,
-        //   });
-        //   return z.NEVER;
-        // }
       }
 
       if (isActive && !price) {
@@ -188,7 +177,7 @@ export const ProductImgSchema = z
   .refine(
     (file) => ['image/jpeg', 'image/jpg', 'image/png'].includes(file.type),
     {
-      message: 'نوع فایل باید PNG یا JPG باشد',
+      message: 'فایل نامعتبر؛ فایل‌های مجاز: PNG و JPG',
     },
   );
 
