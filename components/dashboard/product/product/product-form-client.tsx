@@ -39,6 +39,7 @@ import axios from 'axios';
 import { CatTreeTypes } from '@/drizzle/db-query/category';
 import { Checkbox } from '@/components/ui/checkbox';
 import { removeRequestMeta } from 'next/dist/server/request-meta';
+import { addDash } from '@/lib/persian-string';
 
 type ProductFormClientProps = {
   current: ProductType | undefined;
@@ -159,7 +160,22 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
           return;
         }
 
-        console.log(validatedField.data);
+        if (current?.id) {
+        } else {
+          const { data, status } = await axios.post(
+            `${process.env.NEXT_PUBLIC_API}/product/create-product`,
+            validatedField.data,
+          );
+
+          switch (status) {
+            case 201:
+              toast.success(data.m);
+              // router.push(
+              //   `/control/products/${data.d.id}/${addDash(data.d.name)}`,
+              // );
+              break;
+          }
+        }
       } catch (error) {
         handleError(error as any);
       }
