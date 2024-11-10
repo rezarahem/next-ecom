@@ -47,6 +47,15 @@ type ProductFormClientProps = {
 
 type Form = z.infer<typeof ProductFormSchema>;
 
+type CatFieldTreeProps = {
+  pending: boolean;
+  cat: CatTreeTypes;
+  field: {
+    value: number[];
+    onChange: (value: number[]) => void;
+  };
+};
+
 const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const [pending, startTransition] = useTransition();
   const [openAlertModal, setOpenAlertModal] = useState(false);
@@ -55,7 +64,6 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     url: string;
   } | null>(null);
   const [thumb, setThumb] = useState(current?.thumb ?? '');
-  const [cat, setCat] = useState<number[]>([2]);
   const router = useRouter();
   const title = current ? 'ویرایش محصول' : 'افزودن محصول';
   const description = current
@@ -83,7 +91,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     isActive: current?.isActive ?? false,
     thumb: current?.thumb ?? '',
     images: [],
-    cats: [11],
+    cats: [],
   } satisfies Form;
 
   const form = useForm<Form>({
@@ -135,8 +143,6 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
             toast.success(data.m);
             break;
         }
-
-        console.log(form.getValues('images'));
       } catch (error) {
         handleError(error as any);
       }
@@ -190,22 +196,6 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
         handleError(error as any);
       }
     });
-  };
-
-  const setCatId = (id: number) => {
-    const arr = form.getValues('cats');
-    const idx = arr.indexOf(id);
-
-    if (idx === -1) {
-      form.setValue('cats', [...arr, id]);
-    } else {
-      form.setValue(
-        'cats',
-        arr.filter((i) => i !== id),
-      );
-    }
-
-    console.log(form.getValues('cats'));
   };
 
   return (
@@ -446,6 +436,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                       <FormControl>
                         <span dir='ltr'>
                           <Switch
+                            disabled={pending}
                             className='translate-y-1'
                             checked={field.value}
                             onCheckedChange={field.onChange}
@@ -497,7 +488,11 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <CatFieldTree cat={cat} field={field} />
+                          <CatFieldTree
+                            cat={cat}
+                            field={field}
+                            pending={pending}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -514,21 +509,14 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
 
 export default ProductFormClient;
 
-type CatFieldTreeProps = {
-  cat: CatTreeTypes;
-  field: {
-    value: number[];
-    onChange: (value: number[]) => void;
-  };
-};
-
-const CatFieldTree = ({ cat, field }: CatFieldTreeProps) => {
+const CatFieldTree = ({ cat, field, pending }: CatFieldTreeProps) => {
   const checked = field.value.includes(cat.id);
 
   return (
     <div>
       <div className='flex gap-2'>
         <Checkbox
+          disabled={pending}
           checked={checked}
           onCheckedChange={(checked) => {
             field.onChange(
@@ -544,7 +532,12 @@ const CatFieldTree = ({ cat, field }: CatFieldTreeProps) => {
       {cat.children && cat.children.length > 0 && (
         <div className='mt-2 space-y-2 pr-3'>
           {cat.children.map((child) => (
-            <CatFieldTree key={child.id} cat={child} field={field} />
+            <CatFieldTree
+              key={child.id}
+              cat={child}
+              field={field}
+              pending={pending}
+            />
           ))}
         </div>
       )}
