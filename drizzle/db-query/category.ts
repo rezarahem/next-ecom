@@ -5,8 +5,47 @@ import { Category } from '@/drizzle/drizzle';
 
 export type CategoryType = typeof Category.$inferSelect;
 
+export type CatTreeTypes = {
+  id: number;
+  name: string;
+  children: CatTreeTypes[];
+};
+
+const buildTree = (categories: CategoryType[]): CatTreeTypes[] => {
+  const categoryMap = new Map<number, CatTreeTypes>();
+
+  categories.forEach((category) => {
+    categoryMap.set(category.id, {
+      id: category.id,
+      name: category.name,
+      children: [],
+    });
+  });
+
+  const tree: CatTreeTypes[] = [];
+
+  categories.forEach((category) => {
+    const treeNode = categoryMap.get(category.id)!;
+    if (category.parentId === null) {
+      tree.push(treeNode);
+    } else {
+      const parentNode = categoryMap.get(category.parentId);
+      if (parentNode) {
+        parentNode.children.push(treeNode);
+      }
+    }
+  });
+
+  return tree;
+};
+
 export const getAllCats = async (): Promise<CategoryType[]> => {
   return await db.query.Category.findMany();
+};
+
+export const getAllCatsTree = async (): Promise<CatTreeTypes[]> => {
+  const flat = await db.query.Category.findMany();
+  return buildTree(flat);
 };
 
 export const getCategoryByName = async (

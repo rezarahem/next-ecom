@@ -12,7 +12,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useDropzone } from 'react-dropzone';
-import Heading from '@/components/ui/heading';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
@@ -29,25 +28,21 @@ import {
   Trash,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import {
-  useEffect,
-  useState,
-  useTransition,
-  ChangeEvent,
-  useCallback,
-} from 'react';
-import { useForm, useFormState, useWatch } from 'react-hook-form';
+import { useState, useTransition, ChangeEvent, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { ProductImgArrSchema } from '@/zod/schemas/product/product';
-import { vector } from 'drizzle-orm/pg-core';
 import axios from 'axios';
+import { CatTreeTypes } from '@/drizzle/db-query/category';
+import { Checkbox } from '@/components/ui/checkbox';
+import { removeRequestMeta } from 'next/dist/server/request-meta';
 
 type ProductFormClientProps = {
   current: ProductType | undefined;
-  allCats: CategoryType[];
+  allCats: CatTreeTypes[];
 };
 
 type Form = z.infer<typeof ProductFormSchema>;
@@ -60,6 +55,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     url: string;
   } | null>(null);
   const [thumb, setThumb] = useState(current?.thumb ?? '');
+  const [cat, setCat] = useState<number[]>([2]);
   const router = useRouter();
   const title = current ? 'ویرایش محصول' : 'افزودن محصول';
   const description = current
@@ -87,6 +83,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     isActive: current?.isActive ?? false,
     thumb: current?.thumb ?? '',
     images: [],
+    cats: [11],
   } satisfies Form;
 
   const form = useForm<Form>({
@@ -193,6 +190,22 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
         handleError(error as any);
       }
     });
+  };
+
+  const setCatId = (id: number) => {
+    const arr = form.getValues('cats');
+    const idx = arr.indexOf(id);
+
+    if (idx === -1) {
+      form.setValue('cats', [...arr, id]);
+    } else {
+      form.setValue(
+        'cats',
+        arr.filter((i) => i !== id),
+      );
+    }
+
+    console.log(form.getValues('cats'));
   };
 
   return (
@@ -475,91 +488,21 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
               dir='rtl'
               className='overflow-hidden rounded-md border p-2 md:h-[calc(100%-170px)]'
             >
-              <div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
-                <div>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Rerum non temporibus necessitatibus numquam similique. Neque
-                  inventore veritatis iure non molestias unde animi sequi
-                  laborum odio tempora nisi iste, esse magnam!
-                </div>
+              <div className='space-y-2 p-1'>
+                {allCats.map((cat, i) => (
+                  <FormField
+                    key={cat.id}
+                    control={form.control}
+                    name='cats'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <CatFieldTree cat={cat} field={field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                ))}
               </div>
             </ScrollArea>
           </div>
@@ -570,3 +513,41 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
 };
 
 export default ProductFormClient;
+
+type CatFieldTreeProps = {
+  cat: CatTreeTypes;
+  field: {
+    value: number[];
+    onChange: (value: number[]) => void;
+  };
+};
+
+const CatFieldTree = ({ cat, field }: CatFieldTreeProps) => {
+  const checked = field.value.includes(cat.id);
+
+  return (
+    <div>
+      <div className='flex gap-2'>
+        <Checkbox
+          checked={checked}
+          onCheckedChange={(checked) => {
+            field.onChange(
+              checked
+                ? [...field.value, cat.id]
+                : field.value.filter((value) => value !== cat.id),
+            );
+          }}
+        />
+        <span className='-translate-y-1'>{cat.name}</span>
+      </div>
+
+      {cat.children && cat.children.length > 0 && (
+        <div className='mt-2 space-y-2 pr-3'>
+          {cat.children.map((child) => (
+            <CatFieldTree key={child.id} cat={child} field={field} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

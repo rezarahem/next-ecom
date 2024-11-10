@@ -85,6 +85,7 @@ export const ProductFormSchema = z
         url: z.string(),
       })
       .array(),
+    cats: z.number().array(),
   })
   .superRefine(
     (
