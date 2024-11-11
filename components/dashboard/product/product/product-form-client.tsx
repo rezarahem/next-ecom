@@ -25,6 +25,7 @@ import {
   FlagTriangleRight,
   ImagePlus,
   Loader2,
+  Search,
   Trash,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -65,6 +66,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     url: string;
   } | null>(null);
   const [thumb, setThumb] = useState(current?.thumb ?? '');
+  const [catTree, setCatTree] = useState<CatTreeTypes[]>(allCats);
   const router = useRouter();
   const title = current ? 'ویرایش محصول' : 'افزودن محصول';
   const description = current
@@ -99,6 +101,31 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     resolver: zodResolver(ProductFormSchema),
     defaultValues,
   });
+
+  const filterCatTree = (search: string) => {
+    if (!search) {
+      setCatTree(allCats);
+      return;
+    }
+
+    const filterRecursively = (nodes: CatTreeTypes[]): CatTreeTypes[] => {
+      return nodes
+        .map((node) => {
+          if (node.name.toLowerCase().includes(search.toLowerCase())) {
+            return node;
+          }
+
+          const filteredChildren = filterRecursively(node.children);
+          if (filteredChildren.length > 0) {
+            return { ...node, children: filteredChildren };
+          }
+          return null;
+        })
+        .filter((node): node is CatTreeTypes => node !== null);
+    };
+
+    setCatTree(filterRecursively(allCats));
+  };
 
   const onFileInputChang = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -491,12 +518,23 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
             </div>
             <Separator className='my-3 hidden md:block' />
             <p className='mb-1 font-semibold'>دسته‌بندی</p>
+            <div className='relative mb-2'>
+              <Search className='absolute left-[9px] top-[9px] size-4' />
+              <Input
+                disabled={pending}
+                placeholder='جستوجو ...'
+                onChange={(e) => {
+                  e.preventDefault();
+                  filterCatTree(e.target.value);
+                }}
+              />
+            </div>
             <ScrollArea
               dir='rtl'
-              className='overflow-hidden rounded-md border p-2 md:h-[calc(100%-170px)]'
+              className='overflow-hidden rounded-md border p-2 md:h-[calc(100%-213px)]'
             >
               <div className='space-y-2 p-1'>
-                {allCats.map((cat, i) => (
+                {catTree.map((cat, i) => (
                   <FormField
                     key={cat.id}
                     control={form.control}
