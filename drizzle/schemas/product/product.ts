@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import {
   boolean,
   integer,
@@ -6,6 +7,8 @@ import {
   text,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { ProductFile } from './product-file';
+import { Category } from './category';
 
 export const Product = pgTable('product', {
   id: serial('id').primaryKey(),
@@ -18,3 +21,10 @@ export const Product = pgTable('product', {
   thumb: text('thumb'),
   isActive: boolean('is_active').default(false),
 });
+
+export const ProductRel = relations(Product, ({ one, many }) => ({
+  productFile: many(ProductFile),
+  cats: many(Category)
+}));
+
+
