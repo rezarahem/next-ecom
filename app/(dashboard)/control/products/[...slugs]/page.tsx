@@ -21,7 +21,7 @@ const ProductPage = async ({ params }: { params: Params }) => {
   const cats = await getAllCatsTree();
 
   return (
-    <Container defualtPY>
+    <Container defaultPY>
       <ProductFormClient current={undefined} allCats={cats} />
     </Container>
   );

@@ -8,10 +8,10 @@ export const ProductFile = pgTable(
   {
     productId: integer('product_id')
       .notNull()
-      .references(() => Product.id),
+      .references(() => Product.id, { onDelete: 'cascade' }),
     fileId: integer('file_id')
       .notNull()
-      .references(() => File.id),
+      .references(() => File.id, { onDelete: 'cascade' }),
   },
   (t) => ({ pk: primaryKey({ columns: [t.productId, t.fileId] }) }),
 );
@@ -22,7 +22,7 @@ export const ProductFileRel = relations(ProductFile, ({ one }) => ({
     references: [Product.id],
   }),
   file: one(File, {
-    fields: [ProductFile.productId],
+    fields: [ProductFile.fileId],
     references: [File.id],
   }),
 }));

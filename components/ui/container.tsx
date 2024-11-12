@@ -5,7 +5,7 @@ type ContainerProps = {
   className?: string;
   isFullHeight?: boolean;
   isFlex?: boolean;
-  defualtPY?: boolean;
+  defaultPY?: boolean;
 };
 
 const Container = ({
@@ -13,16 +13,17 @@ const Container = ({
   className,
   isFullHeight = false,
   isFlex = false,
-  defualtPY: addDefualtVerticalPadding = false,
+  defaultPY = false,
 }: ContainerProps) => {
   return (
     <section>
       <div
         className={cn('mx-auto max-w-7xl px-3', className, {
           'h-full': isFullHeight,
-          'py-5': addDefualtVerticalPadding,
+          'py-5': defaultPY,
           flex: isFlex,
-        })}>
+        })}
+      >
         {children}
       </div>
     </section>

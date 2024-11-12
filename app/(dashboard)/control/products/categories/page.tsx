@@ -15,7 +15,7 @@ const ProductCategories = async () => {
   const allCats = await getAllCats();
 
   return (
-    <Container defualtPY>
+    <Container defaultPY>
       <div className='flex flex-wrap gap-3'>
         {allCats.map((cat, i) => (
           <CategoryChip key={cat.id} cat={cat} />

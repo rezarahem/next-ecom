@@ -39,8 +39,6 @@ import { ProductImgArrSchema } from '@/zod/schemas/product/product';
 import axios from 'axios';
 import { CatTreeTypes } from '@/drizzle/db-query/category';
 import { Checkbox } from '@/components/ui/checkbox';
-import { removeRequestMeta } from 'next/dist/server/request-meta';
-import { addDash } from '@/lib/persian-string';
 
 type ProductFormClientProps = {
   current: ProductType | undefined;
@@ -495,7 +493,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                 )}
               />
               <div className='flex items-center'>
-                {form.getValues('id')  && (
+                {form.getValues('id') && (
                   <Button
                     disabled={pending}
                     variant='destructive'

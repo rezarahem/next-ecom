@@ -29,7 +29,7 @@ const CategoryForm = async ({ params }: { params: Params }) => {
     : await getAllCats();
 
   return (
-    <Container defualtPY>
+    <Container defaultPY>
       <CategoryFormClient currentCat={currentCat} allCats={allcats} />
     </Container>
   );
