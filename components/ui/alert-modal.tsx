@@ -5,14 +5,14 @@ import { Button } from '../ui/button';
 import Modal from './model';
 
 type AlertModalProps = {
-  isOpne: boolean;
+  isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   loading: boolean;
 };
 
 const AlertModal = ({
-  isOpne,
+  isOpen,
   onClose,
   onConfirm,
   loading,
@@ -29,7 +29,7 @@ const AlertModal = ({
     <Modal
       title='آیا مطمئن هستید؟'
       description='این عمل غیرقابل بازگشت است.'
-      isOpen={isOpne}
+      isOpen={isOpen}
       onClose={onClose}
     >
       <div className='flex w-full items-center justify-end gap-x-2 space-x-2 pt-6'>

@@ -24,7 +24,5 @@ export const Product = pgTable('product', {
 
 export const ProductRel = relations(Product, ({ one, many }) => ({
   productFile: many(ProductFile),
-  cats: many(Category)
+  cats: many(Category),
 }));
-
-

@@ -197,6 +197,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
           switch (status) {
             case 201:
               toast.success(data.m);
+              form.setValue('id', data.id);
               // router.push(
               //   `/control/products/${data.d.id}/${addDash(data.d.name)}`,
               // );
@@ -244,7 +245,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   return (
     <>
       <AlertModal
-        isOpne={openAlertModal}
+        isOpen={openAlertModal}
         onClose={() => setOpenAlertModal(false)}
         onConfirm={onDelete}
         loading={pending}
@@ -494,7 +495,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                 )}
               />
               <div className='flex items-center'>
-                {current && (
+                {form.getValues('id')  && (
                   <Button
                     disabled={pending}
                     variant='destructive'

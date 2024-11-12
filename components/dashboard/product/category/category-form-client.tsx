@@ -147,7 +147,7 @@ const CategoryFormClient = ({
   return (
     <>
       <AlertModal
-        isOpne={openAlertModal}
+        isOpen={openAlertModal}
         onClose={() => setOpenAlertModal(false)}
         onConfirm={onDelete}
         loading={pending}

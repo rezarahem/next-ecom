@@ -35,7 +35,7 @@ export const removeComma = (value: string) => {
   return value.replace(/,/g, '');
 };
 
-export const addCommaAndRetuenPersianStringNumber = (value: string) => {
+export const addCommaAndReturnPersianStringNumber = (value: string) => {
   if (!value) return '';
 
   const enString = toEnglishNumberStr(value);
@@ -44,7 +44,7 @@ export const addCommaAndRetuenPersianStringNumber = (value: string) => {
   return toPersianNumberStr(enStringWithComma);
 };
 
-export const addCommaAndRetuenPersianStringNumberOnChange = (value: string) => {
+export const addCommaAndReturnPersianStringNumberOnChange = (value: string) => {
   const valueWithoutComma = value.replace(/,/g, '');
   const turnToEnNumber = toEnglishNumberStr(valueWithoutComma);
   const addCommaToEnNumberValue = turnToEnNumber.replace(
@@ -114,3 +114,10 @@ export const addDash = (str: string) => {
 export const removeDash = (str: string) => {
   return str.split('-').join(' ');
 };
+
+export const removeEmptyProps = <T extends Record<string, any>>(obj: T): Partial<T> => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, value]) => value !== "" && value !== null && value !== undefined)
+  ) as Partial<T>;
+};
+

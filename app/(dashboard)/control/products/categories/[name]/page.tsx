@@ -6,7 +6,7 @@ import {
   getCatsExcludeTree,
 } from '@/drizzle/db-query/category';
 import { redirect } from 'next/navigation';
-import { userAceess } from '@/lib/session';
+import { userAccess } from '@/lib/session';
 import { removeDash } from '@/lib/persian-string';
 
 const roles: string[] = ['admin'];
@@ -15,7 +15,7 @@ const redirectUrl = '/login?callbackUrl=/control/products/categories';
 type Params = Promise<{ name: string }>;
 
 const CategoryForm = async ({ params }: { params: Params }) => {
-  const user = await userAceess(roles);
+  const user = await userAccess(roles);
   if (!user) redirect(redirectUrl);
 
   const { name } = await params;

@@ -3,13 +3,13 @@ import AddNewBtn from '@/components/ui/add-new-btn';
 import { getAllCats } from '@/drizzle/db-query/category';
 import CategoryChip from '@/components/dashboard/product/category/category-chip';
 import Container from '@/components/ui/container';
-import { userAceess } from '@/lib/session';
+import { userAccess } from '@/lib/session';
 
 const roles: string[] = ['admin'];
 const redirectUrl = '/login?callbackUrl=/control/products/categories';
 
 const ProductCategories = async () => {
-  const user = await userAceess(roles);
+  const user = await userAccess(roles);
   if (!user) redirect(redirectUrl);
 
   const allCats = await getAllCats();

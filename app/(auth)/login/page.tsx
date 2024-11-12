@@ -1,5 +1,5 @@
 import LoginForm from '@/components/auth/login-form';
-import { getSeesion } from '@/lib/session';
+import { userSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 // type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 type SearchParams = Promise<{
@@ -7,7 +7,7 @@ type SearchParams = Promise<{
 }>;
 
 const LoginPage = async ({ searchParams }: { searchParams: SearchParams }) => {
-  const user = await getSeesion();
+  const user = await userSession();
   if (user) redirect('/');
   const { callbackUrl } = await searchParams;
 

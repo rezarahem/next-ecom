@@ -12,7 +12,7 @@ export type SessionTypes = {
   role: string;
 } | null;
 
-export const getSeesion = async (): Promise<SessionTypes> => {
+export const userSession = async (): Promise<SessionTypes> => {
   const cookie = await getCookie();
 
   if (!cookie) return null;
@@ -32,14 +32,14 @@ export const getSeesion = async (): Promise<SessionTypes> => {
   return user;
 };
 
-export const userAceess = async (roles: string[]): Promise<SessionTypes> => {
-  const user = await getSeesion();
+export const userAccess = async (roles: string[]): Promise<SessionTypes> => {
+  const user = await userSession();
 
   if (!user) return null;
 
   const userRoles = [user.role];
 
-  const hasAccess = userRoles.some(r => roles.includes(r));
+  const hasAccess = userRoles.some((r) => roles.includes(r));
 
   if (!hasAccess) return null;
 

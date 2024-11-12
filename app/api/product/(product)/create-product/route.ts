@@ -1,27 +1,78 @@
 import { db } from '@/drizzle/db';
-import { Category } from '@/drizzle/drizzle';
-import { userAceess } from '@/lib/session';
-import { CategoryFormSchema, ProductFormSchema } from '@/zod/zod';
+import { Category, Product, ProductFile } from '@/drizzle/drizzle';
+import { userAccess } from '@/lib/session';
+import { ProductFormSchema } from '@/zod/zod';
+import { inArray } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
 const roles: string[] = ['admin'];
 
 export const POST = async (req: NextRequest) => {
-  const user = await userAceess(roles);
+  const user = await userAccess(roles);
 
   if (!user) {
     return NextResponse.json({ m: 'دسترسی غیر مجاز' }, { status: 403 });
   }
 
-  const data = await req.json();
+  const json = await req.json();
 
-  const verifiedFields = ProductFormSchema.safeParse(data);
+  const validatedFields = ProductFormSchema.safeParse(json);
 
-  if (!verifiedFields.success) {
+  if (!validatedFields.success) {
     return NextResponse.json({ m: 'ورودی نامعتبر' }, { status: 400 });
   }
 
-  console.log(verifiedFields.data);
+  const tx = await db.transaction(async (tx) => {
+    const {
+      buyLimit,
+      cats,
+      desc,
+      discount,
+      images,
+      inventory,
+      isActive,
+      name,
+      price,
+      thumb,
+    } = validatedFields.data;
 
-  return NextResponse.json({ m: 'دسته‌بندی ایجاد شد' }, { status: 201 });
+    const [product] = await tx
+      .insert(Product)
+      .values({
+        name,
+        desc,
+        price: +price,
+        discount: +discount,
+        inventory: +inventory,
+        isActive,
+        thumb,
+        buyLimit: +buyLimit,
+      })
+      .returning();
+
+    if (cats.length > 0) {
+      await tx
+        .update(Category)
+        .set({
+          productId: product.id,
+        })
+        .where(inArray(Category.id, cats));
+    }
+
+    if (images.length > 0) {
+      await tx
+        .insert(ProductFile)
+        .values(
+          images.map((img, i) => ({ productId: product.id, fileId: img.id })),
+        );
+    }
+
+    return product;
+  });
+
+  if (!tx.id) {
+    return NextResponse.json({ m: 'خطای ناشناخته' }, { status: 400 });
+  }
+
+  return NextResponse.json({ m: 'محصول ایجاد شد', id: tx.id }, { status: 201 });
 };

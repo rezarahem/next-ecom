@@ -64,7 +64,7 @@ const CategoryChip = ({ cat }: CategoryChipProps) => {
           <Trash2 />
         </Button>
         <AlertModal
-          isOpne={openAlertModal}
+          isOpen={openAlertModal}
           onClose={() => setOpenAlertModal(false)}
           onConfirm={onDelete}
           loading={pending}

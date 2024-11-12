@@ -1,14 +1,14 @@
 import { db } from '@/drizzle/db';
 import { File as FileTable } from '@/drizzle/drizzle';
 import { s3Upload } from '@/lib/s3';
-import { userAceess } from '@/lib/session';
+import { userAccess } from '@/lib/session';
 import { ProductImgArrSchema } from '@/zod/schemas/product/product';
 import { NextRequest, NextResponse } from 'next/server';
 
 const roles: string[] = ['admin'];
 
 export const POST = async (req: NextRequest) => {
-  const user = await userAceess(roles);
+  const user = await userAccess(roles);
 
   if (!user) {
     return NextResponse.json({ m: 'دسترسی غیر مجاز' }, { status: 403 });
