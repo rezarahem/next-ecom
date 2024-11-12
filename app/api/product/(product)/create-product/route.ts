@@ -1,5 +1,6 @@
 import { db } from '@/drizzle/db';
-import { Category, Product, ProductFile } from '@/drizzle/drizzle';
+import { Category, Product, ProductCat, ProductFile } from '@/drizzle/drizzle';
+import { removeEmptyProps } from '@/lib/persian-string';
 import { userAccess } from '@/lib/session';
 import { ProductFormSchema } from '@/zod/zod';
 import { inArray } from 'drizzle-orm';
@@ -52,11 +53,8 @@ export const POST = async (req: NextRequest) => {
 
     if (cats.length > 0) {
       await tx
-        .update(Category)
-        .set({
-          productId: product.id,
-        })
-        .where(inArray(Category.id, cats));
+        .insert(ProductCat)
+        .values(cats.map((catId, i) => ({ catId, productId: product.id })));
     }
 
     if (images.length > 0) {
