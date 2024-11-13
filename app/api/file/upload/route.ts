@@ -1,6 +1,6 @@
 import { db } from '@/drizzle/db';
 import { File as FileTable } from '@/drizzle/drizzle';
-import { s3Upload } from '@/lib/s3';
+import { s3MultiUpload, s3Upload } from '@/lib/s3';
 import { userAccess } from '@/lib/session';
 import { ProductImgArrSchema } from '@/zod/schemas/product/product';
 import { NextRequest, NextResponse } from 'next/server';
@@ -24,16 +24,20 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ m: 'ورودی نامعتبر' }, { status: 400 });
   }
 
-  const urls: { url: string }[] = [];
+  // const urls: { url: string }[] = [];
+  // for (const file of filesArr) {
+  //   try {
+  //     const url = await s3Upload(file);
+  //     if (url) urls.push({ url });
+  //   } catch (error) {}
+  // }
 
-  for (const file of filesArr) {
-    try {
-      const url = await s3Upload(file);
-      if (url) urls.push({ url });
-    } catch (error) {}
-  }
+  const res = (await s3MultiUpload(filesArr)) as string[];
 
-  const images = await db.insert(FileTable).values(urls).returning();
+  const images = await db
+    .insert(FileTable)
+    .values(res.map((url) => ({ url })))
+    .returning();
 
   return NextResponse.json(
     { m: 'آپلود با موفقیت به اتمام رسید', images },

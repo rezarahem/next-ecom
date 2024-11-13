@@ -25,6 +25,7 @@ export const POST = async (req: NextRequest) => {
     const {
       buyLimit,
       cats,
+      slug,
       desc,
       discount,
       images,
@@ -39,6 +40,7 @@ export const POST = async (req: NextRequest) => {
       .insert(Product)
       .values({
         name,
+        slug,
         desc,
         price: +price,
         discount: +discount,
@@ -70,5 +72,8 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ m: 'خطای ناشناخته' }, { status: 400 });
   }
 
-  return NextResponse.json({ m: 'محصول ایجاد شد', id: tx.id }, { status: 201 });
+  return NextResponse.json(
+    { m: 'محصول ایجاد شد', d: { id: tx.id, slug: tx.slug } },
+    { status: 201 },
+  );
 };

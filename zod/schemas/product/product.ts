@@ -1,5 +1,4 @@
 import { removeComma, toEnglishNumberStr } from '@/lib/persian-string';
-import { isCancel } from 'axios';
 import * as z from 'zod';
 
 export const ProductFormSchema = z
@@ -13,6 +12,7 @@ export const ProductFormSchema = z
         message: `حروف غیر مجاز (\\/[]{}<>+?,:;'"\`!@#$%^&*؟!٫)`,
       })
       .transform((v) => v.trim()),
+    slug: z.string(),
     price: z
       .string()
       .nullable()
@@ -168,7 +168,25 @@ export const ProductFormSchema = z
         }
       }
     },
-  );
+  )
+  .transform((form) => {
+    const { name, slug } = form;
+
+    if (slug) {
+      const slugSlug = slug.toLocaleLowerCase().trim().split(' ').join('-');
+      return {
+        ...form,
+        slug: slugSlug,
+      };
+    } else {
+      const nameSlug = name.toLowerCase().trim().split(' ').join('-');
+
+      return {
+        ...form,
+        slug: nameSlug,
+      };
+    }
+  });
 
 export const ProductImgSchema = z
   .instanceof(File)

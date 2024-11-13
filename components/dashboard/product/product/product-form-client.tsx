@@ -84,6 +84,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const defaultValues = {
     id: current?.id,
     name: current?.name ?? '',
+    slug: current?.slug.split('-').join('') ?? '',
     desc: current?.desc ?? '',
     price: current?.price?.toString() ?? '',
     discount: current?.discount?.toString() ?? '',
@@ -186,6 +187,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
         }
 
         if (current?.id) {
+          // update
         } else {
           const { data, status } = await axios.post(
             `${process.env.NEXT_PUBLIC_API}/product/create-product`,
@@ -195,10 +197,8 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
           switch (status) {
             case 201:
               toast.success(data.m);
-              form.setValue('id', data.id);
-              // router.push(
-              //   `/control/products/${data.d.id}/${addDash(data.d.name)}`,
-              // );
+              form.setValue('id', data.d.id);
+              router.push(`/control/products/${data.d.id}/${data.d.slug}`);
               break;
           }
         }
@@ -261,6 +261,19 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>نام محصول</FormLabel>
+                    <FormControl>
+                      <Input disabled={pending} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='slug'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>اسلاگ</FormLabel>
                     <FormControl>
                       <Input disabled={pending} {...field} />
                     </FormControl>
