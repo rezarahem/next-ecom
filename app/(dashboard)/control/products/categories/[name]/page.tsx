@@ -1,13 +1,9 @@
 import CategoryFormClient from '@/components/dashboard/product/category/category-form-client';
 import Container from '@/components/ui/container';
-import {
-  getAllCats,
-  getCategoryByName,
-  getCatsExcludeTree,
-} from '@/drizzle/db-query/category';
 import { redirect } from 'next/navigation';
 import { userAccess } from '@/lib/session';
 import { removeDash } from '@/lib/persian-string';
+import { getAllCats, getCategoryByName, getCatsExcludeTree } from '@/query';
 
 const roles: string[] = ['admin'];
 const redirectUrl = '/login?callbackUrl=/control/products/categories';
@@ -24,13 +20,13 @@ const CategoryForm = async ({ params }: { params: Params }) => {
     removeDash(decodeURIComponent(name)),
   );
 
-  const allcats = currentCat
+  const allCats = currentCat
     ? await getCatsExcludeTree(currentCat?.id)
     : await getAllCats();
 
   return (
     <Container defaultPY>
-      <CategoryFormClient currentCat={currentCat} allCats={allcats} />
+      <CategoryFormClient currentCat={currentCat} allCats={allCats} />
     </Container>
   );
 };

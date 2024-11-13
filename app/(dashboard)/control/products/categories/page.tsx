@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation';
 import AddNewBtn from '@/components/ui/add-new-btn';
-import { getAllCats } from '@/drizzle/db-query/category';
 import CategoryChip from '@/components/dashboard/product/category/category-chip';
 import Container from '@/components/ui/container';
 import { userAccess } from '@/lib/session';
+import { getAllCats } from '@/query';
 
 const roles: string[] = ['admin'];
 const redirectUrl = '/login?callbackUrl=/control/products/categories';

@@ -16,7 +16,6 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import { CategoryType, ProductType } from '@/drizzle/drizzle';
 import { handleError } from '@/lib/handle-error';
 import { ProductFormSchema } from '@/zod/zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -37,8 +36,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { ProductImgArrSchema } from '@/zod/schemas/product/product';
 import axios from 'axios';
-import { CatTreeTypes } from '@/drizzle/db-query/category';
-import { Checkbox } from '@/components/ui/checkbox';
+import { CatTreeTypes, ProductType } from '@/query';
 
 type ProductFormClientProps = {
   current: ProductType | undefined;

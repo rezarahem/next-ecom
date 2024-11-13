@@ -1,7 +1,7 @@
 import ProductFormClient from '@/components/dashboard/product/product/product-form-client';
 import Container from '@/components/ui/container';
-import { getAllCatsTree } from '@/drizzle/db-query/category';
 import { userAccess } from '@/lib/session';
+import { getAllCatsTree } from '@/query';
 import { notFound, redirect } from 'next/navigation';
 
 const roles: string[] = ['admin'];
