@@ -173,13 +173,13 @@ export const ProductFormSchema = z
     const { name, slug } = form;
 
     if (slug) {
-      const slugSlug = slug.toLocaleLowerCase().trim().split(' ').join('-');
+      const slugSlug = slug.split(' ').join('-');
       return {
         ...form,
         slug: slugSlug,
       };
     } else {
-      const nameSlug = name.toLowerCase().trim().split(' ').join('-');
+      const nameSlug = name.split(' ').join('-');
 
       return {
         ...form,

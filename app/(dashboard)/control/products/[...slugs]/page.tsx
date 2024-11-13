@@ -1,7 +1,7 @@
 import ProductFormClient from '@/components/dashboard/product/product/product-form-client';
 import Container from '@/components/ui/container';
 import { userAccess } from '@/lib/session';
-import { getAllCatsTree } from '@/query';
+import { getAllCatsTree, getProductById } from '@/query';
 import { notFound, redirect } from 'next/navigation';
 
 const roles: string[] = ['admin'];
@@ -19,10 +19,14 @@ const ProductPage = async ({ params }: { params: Params }) => {
   if (!user) redirect(redirectUrl);
 
   const cats = await getAllCatsTree();
+  const current =
+    slugs[0] && typeof slugs[0] === 'number'
+      ? await getProductById(+slugs[0])
+      : undefined;
 
   return (
     <Container defaultPY>
-      <ProductFormClient current={undefined} allCats={cats} />
+      <ProductFormClient current={current} allCats={cats} />
     </Container>
   );
 };

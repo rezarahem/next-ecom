@@ -1,7 +1,5 @@
-import Link from 'next/link';
-
-const HomePage = () => {
-  return <Link href='/tet/123/تست-اسلاگ-فارسی'>test</Link>;
+const HomePage = async () => {
+  return <div>test</div>;
 };
 
 export default HomePage;

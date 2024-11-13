@@ -21,7 +21,7 @@ export const ProductCatRel = relations(ProductCat, ({ one }) => ({
     fields: [ProductCat.productId],
     references: [Product.id],
   }),
-  file: one(Category, {
+  cat: one(Category, {
     fields: [ProductCat.catId                       ],
     references: [Category.id],
   }),

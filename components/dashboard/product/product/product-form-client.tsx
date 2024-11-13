@@ -37,6 +37,7 @@ import { cn } from '@/lib/utils';
 import { ProductImgArrSchema } from '@/zod/schemas/product/product';
 import axios from 'axios';
 import { CatTreeTypes, ProductType } from '@/query';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type ProductFormClientProps = {
   current: ProductType | undefined;
@@ -90,8 +91,8 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     buyLimit: current?.buyLimit?.toString() ?? '',
     isActive: current?.isActive ?? false,
     thumb: current?.thumb ?? '',
-    images: [],
-    cats: [],
+    images: current?.productFile.map(({ file }) => file) ?? [],
+    cats: current?.cat.map((c) => c.catId) ?? [],
   } satisfies Form;
 
   const form = useForm<Form>({
@@ -574,14 +575,13 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
 export default ProductFormClient;
 
 const CatFieldTree = ({ cat, field, pending }: CatFieldTreeProps) => {
-  const checked = field.value.includes(cat.id);
-
+  // const checked = field.value.includes(cat.id);
   return (
     <div>
       <div className='flex gap-2'>
         <Checkbox
           disabled={pending}
-          checked={checked}
+          checked={field.value.includes(cat.id)}
           onCheckedChange={(checked) => {
             field.onChange(
               checked

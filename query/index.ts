@@ -6,4 +6,8 @@ export {
   getCategoryByName,
   getCatsExcludeTree,
 } from './product/category';
-export { type ProductType } from './product/product';
+export {
+  type ProductBaseType,
+  type ProductType,
+  getProductById,
+} from './product/product';
