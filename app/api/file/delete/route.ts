@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/db';
-import { File, File as FileTable } from '@/drizzle/drizzle';
+import { File, File as FileTable } from '@/drizzle';
 import { s3Delete, s3Upload } from '@/lib/s3';
 import { userAccess } from '@/lib/session';
 import { ProductImgArrSchema } from '@/zod/schemas/product/product';

@@ -1,9 +1,9 @@
 import { db } from '@/drizzle/db';
-import { User } from '@/drizzle/drizzle';
+import { User } from '@/drizzle';
 import { utcUnix } from '@/lib/date';
 import { generateOtp } from '@/lib/generate-otp';
 import { sendOtp } from '@/lib/send-otp';
-import { PhoneNumberSchema } from '@/zod/zod';
+import { PhoneNumberSchema } from '@/zod';
 import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -42,7 +42,7 @@ export const POST = async (req: NextRequest) => {
       {
         m: 'برای ورود ثبت نام کنید',
       },
-      { status: 202 }
+      { status: 202 },
     );
   }
 
@@ -70,7 +70,7 @@ export const POST = async (req: NextRequest) => {
   if (!res) {
     return NextResponse.json(
       { m: 'خطا در ارسال کد تایید، دقایقی دیگر تلاش کنید' },
-      { status: 503 }
+      { status: 503 },
     );
   }
 

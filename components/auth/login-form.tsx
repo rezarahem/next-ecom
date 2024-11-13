@@ -12,7 +12,7 @@ import {
 import { handleError } from '@/lib/handle-error';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { OtpSchema, PhoneNumberSchema, UserRegisterSchema } from '@/zod/zod';
+import { OtpSchema, PhoneNumberSchema, UserRegisterSchema } from '@/zod';
 import { useRouter } from 'next/navigation';
 import { useCountdown } from 'usehooks-ts';
 
@@ -81,7 +81,7 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
 
         const { data, status } = (await axios.post(
           `${process.env.NEXT_PUBLIC_API}/auth/check-phone`,
-          verifiedFields.data
+          verifiedFields.data,
         )) as BackendResType;
 
         switch (status) {
@@ -116,7 +116,7 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
 
         const { data, status } = await axios.post(
           `${process.env.NEXT_PUBLIC_API}/auth/register`,
-          verifiedFields.data
+          verifiedFields.data,
         );
 
         switch (status) {
@@ -147,7 +147,7 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
 
         const { data, status } = await axios.post(
           `${process.env.NEXT_PUBLIC_API}/auth/verify-otp`,
-          verifiedFields.data
+          verifiedFields.data,
         );
 
         switch (status) {
@@ -203,7 +203,7 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
         return (
           <Input
             value={phoneNumber}
-            onChange={e => {
+            onChange={(e) => {
               setInputError('');
               setPhoneNumber(e.target.value);
             }}
@@ -217,7 +217,7 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
         return (
           <Input
             value={userName}
-            onChange={e => {
+            onChange={(e) => {
               setInputError('');
               setUserName(e.target.value);
             }}
@@ -235,10 +235,11 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
               pattern={regexOnlyDigits}
               maxLength={5}
               value={userOtpNumber}
-              onChange={v => {
+              onChange={(v) => {
                 setUserOtpNumber(v);
               }}
-              disabled={isPending}>
+              disabled={isPending}
+            >
               <InputOTPGroup>
                 <InputOTPSlot index={4} />
               </InputOTPGroup>
@@ -259,7 +260,7 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
                 <InputOTPSlot index={0} />
               </InputOTPGroup>
             </InputOTP>
-            <span className='absolute top-12 right-[3px]'>
+            <span className='absolute right-[3px] top-12'>
               {convertToMins()}
             </span>
           </div>
@@ -293,7 +294,7 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
 
   return (
     <div className='w-full space-y-4 p-5'>
-      <div className='relative mx-auto max-w-96 '>
+      <div className='relative mx-auto max-w-96'>
         <p className='mb-10 text-sm text-muted-foreground'>{formLabel()}</p>
         <span className='absolute right-[3px] top-10 text-xs text-red-500'>
           {inputError}
@@ -303,12 +304,15 @@ const LoginForm = ({ callbackUrl }: LoginFormProp) => {
           onClick={handleSubmit}
           size='lg'
           className='mr-auto mt-10 flex'
-          disabled={isPending}>
+          disabled={isPending}
+        >
           {buttonLabel()}
           <div className='-translate-x-3'>
-            {false ?
+            {false ? (
               <LoaderCircle className='size-4 animate-spin' />
-            : <ArrowLeft className='size-4' />}
+            ) : (
+              <ArrowLeft className='size-4' />
+            )}
           </div>
         </Button>
       </div>

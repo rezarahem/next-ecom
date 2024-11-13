@@ -1,8 +1,8 @@
 import { db } from '@/drizzle/db';
-import { User } from '@/drizzle/drizzle';
+import { User } from '@/drizzle';
 import { utcUnix } from '@/lib/date';
 import { setCookie } from '@/lib/cookie';
-import { OtpSchema } from '@/zod/zod';
+import { OtpSchema } from '@/zod';
 import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -39,7 +39,7 @@ export const POST = async (req: NextRequest) => {
   if (!otpAttempt) {
     return NextResponse.json(
       { m: 'این کد منقضی شده است، مجددا تلاش کنید' },
-      { status: 404 }
+      { status: 404 },
     );
   }
 
@@ -48,7 +48,7 @@ export const POST = async (req: NextRequest) => {
   if (!isOtpMatching) {
     return NextResponse.json(
       { m: 'کد نامعتبر، مجددا تلاش کنید' },
-      { status: 404 }
+      { status: 404 },
     );
   }
 

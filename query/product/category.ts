@@ -1,6 +1,6 @@
 import 'server-only';
 import { eq, sql } from 'drizzle-orm';
-import { Category } from '@/drizzle/drizzle';
+import { Category } from '@/drizzle';
 import { db } from '@/drizzle/db';
 
 export type CategoryType = typeof Category.$inferSelect;

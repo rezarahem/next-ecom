@@ -1,7 +1,7 @@
 import { db } from '@/drizzle/db';
-import { Product, ProductCat, ProductFile } from '@/drizzle/drizzle';
+import { Product, ProductCat, ProductFile } from '@/drizzle';
 import { userAccess } from '@/lib/session';
-import { ProductFormSchema } from '@/zod/zod';
+import { ProductFormSchema } from '@/zod';
 import { NextRequest, NextResponse } from 'next/server';
 
 const roles: string[] = ['admin'];

@@ -3,7 +3,7 @@ import 'server-only';
 import { getCookie } from './cookie';
 import { db } from '@/drizzle/db';
 import { and, eq } from 'drizzle-orm';
-import { User } from '@/drizzle/drizzle';
+import { User } from '@/drizzle';
 
 export type SessionTypes = {
   name: string;

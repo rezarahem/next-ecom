@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/db';
-import { Category } from '@/drizzle/drizzle';
+import { Category } from '@/drizzle';
 import { userAccess } from '@/lib/session';
 import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';

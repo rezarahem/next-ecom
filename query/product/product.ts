@@ -1,3 +1,3 @@
-import { Product } from '@/drizzle/drizzle';
+import { Product } from '@/drizzle';
 
 export type ProductType = typeof Product.$inferSelect;

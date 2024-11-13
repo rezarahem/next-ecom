@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/db';
-import { File, Product } from '@/drizzle/drizzle';
+import { File, Product } from '@/drizzle';
 import { s3MultiDelete } from '@/lib/s3';
 import { userAccess } from '@/lib/session';
 import { eq, inArray } from 'drizzle-orm';

@@ -1,6 +1,6 @@
 'use client';
 // import { CategoryType } from '@/drizzle/db-query/category';
-import { CategoryFormSchema } from '@/zod/zod';
+import { CategoryFormSchema } from '@/zod';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,7 +39,7 @@ import { handleError } from '@/lib/handle-error';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import AlertModal from '@/components/ui/alert-modal';
-import { CategoryType } from '@/drizzle/drizzle';
+import { CategoryType } from '@/drizzle';
 import { addDash } from '@/lib/persian-string';
 
 type CategoryFormClientProps = {
