@@ -1,15 +1,7 @@
 import { db } from '@/drizzle/db';
-import {
-  Category,
-  File,
-  Product,
-  ProductCat,
-  ProductFile,
-} from '@/drizzle/drizzle';
-import { removeEmptyProps } from '@/lib/persian-string';
+import { File, Product } from '@/drizzle/drizzle';
 import { s3MultiDelete } from '@/lib/s3';
 import { userAccess } from '@/lib/session';
-import { ProductFormSchema } from '@/zod/zod';
 import { eq, inArray } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 

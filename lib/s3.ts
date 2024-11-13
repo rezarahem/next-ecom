@@ -32,6 +32,34 @@ export const s3Upload = async (file: File) => {
   return `${process.env.LIARA_BUCKET_ADDRESS}/${fileKey}`;
 };
 
+export const s3MultiUpload = async (files: File[]) => {
+  const uploadPromises = files.map(async (file) => {
+    const bytes = await file.arrayBuffer();
+    const fileKey = `${Date.now()}_${file.name}`;
+    const params = {
+      Body: Buffer.from(bytes),
+      Bucket: process.env.LIARA_BUCKET_NAME as string,
+      Key: fileKey,
+      ContentType: file.type,
+    };
+
+    const res = await s3.send(new PutObjectCommand(params));
+
+    if (res.$metadata.httpStatusCode !== 200) {
+      throw new Error(`Failed to upload ${file.name}`);
+    }
+
+    return `${process.env.LIARA_BUCKET_ADDRESS}/${fileKey}`;
+  });
+
+  try {
+    const uploadResults = await Promise.all(uploadPromises);
+    return uploadResults;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const s3Delete = async (url: string) => {
   const segments = url.split('/');
 

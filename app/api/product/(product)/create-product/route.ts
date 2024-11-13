@@ -1,9 +1,7 @@
 import { db } from '@/drizzle/db';
-import { Category, Product, ProductCat, ProductFile } from '@/drizzle/drizzle';
-import { removeEmptyProps } from '@/lib/persian-string';
+import { Product, ProductCat, ProductFile } from '@/drizzle/drizzle';
 import { userAccess } from '@/lib/session';
 import { ProductFormSchema } from '@/zod/zod';
-import { inArray } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
 const roles: string[] = ['admin'];
