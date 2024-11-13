@@ -3,6 +3,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
+  DeleteObjectsCommand,
 } from '@aws-sdk/client-s3';
 
 const s3 = new S3Client({
@@ -33,7 +34,7 @@ export const s3Upload = async (file: File) => {
 
 export const s3Delete = async (url: string) => {
   const segments = url.split('/');
-  
+
   const fileKey = segments[segments.length - 1];
 
   const params = {
@@ -46,4 +47,26 @@ export const s3Delete = async (url: string) => {
   if (res.$metadata.httpStatusCode !== 204) return null;
 
   return url;
+};
+
+export const s3MultiDelete = async (urls: string[]) => {
+  const objectsToDelete = urls.map((url) => {
+    const segments = url.split('/');
+    const fileKey = segments[segments.length - 1];
+    return { Key: fileKey };
+  });
+
+  const params = {
+    Bucket: process.env.LIARA_BUCKET_NAME as string,
+    Delete: {
+      Objects: objectsToDelete,
+      Quiet: true,
+    },
+  };
+
+  const res = await s3.send(new DeleteObjectsCommand(params));
+
+  if (res.$metadata.httpStatusCode !== 204) return null;
+
+  return urls;
 };
