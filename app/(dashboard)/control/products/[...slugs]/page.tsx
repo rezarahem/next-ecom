@@ -20,7 +20,7 @@ const ProductPage = async ({ params }: { params: Params }) => {
 
   const cats = await getAllCatsTree();
   const current =
-    slugs[0] && typeof slugs[0] === 'number'
+    slugs[0] && typeof +slugs[0] === 'number'
       ? await getProductById(+slugs[0])
       : undefined;
 

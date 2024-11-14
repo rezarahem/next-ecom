@@ -83,7 +83,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const defaultValues = {
     id: current?.id,
     name: current?.name ?? '',
-    slug: current?.slug.split('-').join('') ?? '',
+    slug: current?.slug.split('-').join(' ') ?? '',
     desc: current?.desc ?? '',
     price: current?.price?.toString() ?? '',
     discount: current?.discount?.toString() ?? '',
