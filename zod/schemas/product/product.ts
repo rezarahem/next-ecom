@@ -201,3 +201,13 @@ export const ProductImgSchema = z
   );
 
 export const ProductImgArrSchema = z.array(ProductImgSchema);
+
+export const DeleteProductSchema = z.object({
+  id: z.number(),
+  images: z
+    .object({
+      id: z.number(),
+      url: z.string(),
+    })
+    .array(),
+});

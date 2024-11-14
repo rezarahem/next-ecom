@@ -58,10 +58,12 @@ type CatFieldTreeProps = {
 const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const [pending, startTransition] = useTransition();
   const [openAlertModal, setOpenAlertModal] = useState(false);
+  const [deleteState, setDeleteState] = useState<'pro' | 'img'>('pro');
   const [deleteImage, setDeleteImage] = useState<{
     id: number;
     url: string;
   } | null>(null);
+
   const [thumb, setThumb] = useState(current?.thumb ?? '');
   const [catTree, setCatTree] = useState<CatTreeTypes[]>(allCats);
   const router = useRouter();
@@ -211,14 +213,13 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     setOpenAlertModal(false);
     startTransition(async () => {
       try {
-        if (deleteImage?.id) {
-          const { data, status } = await axios.post(
-            `${process.env.NEXT_PUBLIC_API}/file/delete`,
-            deleteImage,
-          );
-
-          switch (status) {
-            case 200:
+        switch (deleteState) {
+          case 'img':
+            const { data, status } = await axios.post(
+              `${process.env.NEXT_PUBLIC_API}/file/delete`,
+              deleteImage,
+            );
+            if (status === 200) {
               form.setValue(
                 'images',
                 form
@@ -226,12 +227,21 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                   .filter((img) => img.id !== data.image.id),
               );
               toast.success(data.m);
-              break;
-
-            default:
-              break;
-          }
-        } else {
+            }
+            break;
+          case 'pro':
+            const res = await axios.post(
+              `${process.env.NEXT_PUBLIC_API}/product/delete-product`,
+              {
+                id: form.getValues('id'),
+                images: form.getValues('images'),
+              },
+            );
+            if (res.status === 200) {
+              toast.success(res.data.m);
+              router.push('/control/products');
+            }
+            break;
         }
       } catch (error) {
         handleError(error as any);
@@ -412,6 +422,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                                     disabled={pending}
                                     onClick={(e) => {
                                       e.preventDefault();
+                                      setDeleteState('img');
                                       setOpenAlertModal(true);
                                       setDeleteImage({
                                         id,
@@ -511,7 +522,10 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
                     variant='destructive'
                     size='icon'
                     type='button'
-                    onClick={() => setOpenAlertModal(true)}
+                    onClick={() => {
+                      setDeleteState('pro');
+                      setOpenAlertModal(true);
+                    }}
                   >
                     <Trash className='size-4' />
                   </Button>

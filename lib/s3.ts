@@ -78,23 +78,45 @@ export const s3Delete = async (url: string) => {
 };
 
 export const s3MultiDelete = async (urls: string[]) => {
-  const objectsToDelete = urls.map((url) => {
+  const deletePromises = urls.map(async (url) => {
     const segments = url.split('/');
     const fileKey = segments[segments.length - 1];
-    return { Key: fileKey };
+    const params = {
+      Bucket: process.env.LIARA_BUCKET_NAME as string,
+      Key: fileKey,
+    };
+    const res = await s3.send(new DeleteObjectCommand(params));
+    if (res.$metadata.httpStatusCode !== 204) return null;
+    return url;
   });
-
-  const params = {
-    Bucket: process.env.LIARA_BUCKET_NAME as string,
-    Delete: {
-      Objects: objectsToDelete,
-      Quiet: true,
-    },
-  };
-
-  const res = await s3.send(new DeleteObjectsCommand(params));
-
-  if (res.$metadata.httpStatusCode !== 204) return null;
-
-  return urls;
+  try {
+    const deleteResults = await Promise.all(deletePromises);
+    return deleteResults;
+  } catch (error) {
+    return error;
+  }
 };
+
+// export const s3MultiDelete = async (urls: string[]) => {
+//   const objectsToDelete = urls.map((url) => {
+//     const segments = url.split('/');
+//     const fileKey = segments[segments.length - 1];
+//     return { Key: fileKey };
+//   });
+
+//   const params = {
+//     Bucket: process.env.LIARA_BUCKET_NAME as string,
+//     Delete: {
+//       Objects: objectsToDelete,
+//       Quiet: true,
+//     },
+//   };
+
+//   const res = await s3.send(new DeleteObjectsCommand(params));
+
+//   console.log(res);
+
+//   if (res.$metadata.httpStatusCode !== 204) return null;
+
+//   return urls;
+// };

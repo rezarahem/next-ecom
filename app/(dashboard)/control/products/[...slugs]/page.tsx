@@ -20,9 +20,7 @@ const ProductPage = async ({ params }: { params: Params }) => {
 
   const cats = await getAllCatsTree();
   const current =
-    slugs[0] && typeof +slugs[0] === 'number'
-      ? await getProductById(+slugs[0])
-      : undefined;
+    slugs[0] === 'new' ? undefined : await getProductById(+slugs[0]);
 
   return (
     <Container defaultPY>

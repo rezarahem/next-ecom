@@ -4,6 +4,7 @@ import { s3MultiDelete } from '@/lib/s3';
 import { userAccess } from '@/lib/session';
 import { eq, inArray } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
+import { DeleteProductSchema } from '@/zod';
 
 const roles: string[] = ['admin'];
 
@@ -14,10 +15,18 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ m: 'دسترسی غیر مجاز' }, { status: 403 });
   }
 
-  const { id, images } = (await req.json()) as {
+  const data = (await req.json()) as {
     id: number;
     images: { id: number; url: string }[];
   };
+
+  const validatedFields = DeleteProductSchema.safeParse(data);
+
+  if (!validatedFields.success) {
+    return NextResponse.json({ m: 'ورودی نامعتبر' }, { status: 400 });
+  }
+
+  const { id, images } = validatedFields.data;
 
   const tx = await db.transaction(async (tx) => {
     if (images.length > 0) {
@@ -26,7 +35,7 @@ export const POST = async (req: NextRequest) => {
 
       if (!imgDel) return null;
 
-      tx.delete(File).where(
+      await tx.delete(File).where(
         inArray(
           File.id,
           images.map((i) => i.id),
@@ -34,7 +43,7 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
-    tx.delete(Product).where(eq(Product.id, id));
+    await tx.delete(Product).where(eq(Product.id, id));
 
     return true;
   });
@@ -43,5 +52,5 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ m: 'خطای ناشناخته' }, { status: 400 });
   }
 
-  return NextResponse.json({ m: 'محصول حذف شد' }, { status: 201 });
+  return NextResponse.json({ m: 'محصول حذف شد' }, { status: 200 });
 };
