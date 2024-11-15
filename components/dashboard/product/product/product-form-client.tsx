@@ -184,13 +184,6 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const onSubmit = (formData: Form) => {
     startTransition(async () => {
       try {
-        // const validatedField = ProductFormSchema.safeParse(formData);
-
-        // if (!validatedField.success) {
-        //   toast.error('ورودی نامعتبر');
-        //   return;
-        // }
-
         if (current?.id) {
           const { data, status } = await axios.post(
             `${process.env.NEXT_PUBLIC_API}/product/update-product`,

@@ -1,5 +1,4 @@
 'use client';
-// import { CategoryType } from '@/drizzle/db-query/category';
 import { CategoryFormSchema } from '@/zod';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
@@ -39,8 +38,8 @@ import { handleError } from '@/lib/handle-error';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import AlertModal from '@/components/ui/alert-modal';
-import { CategoryType } from '@/drizzle';
 import { addDash } from '@/lib/persian-string';
+import { CategoryType } from '@/query';
 
 type CategoryFormClientProps = {
   currentCat: CategoryType | undefined;
@@ -78,17 +77,17 @@ const CategoryFormClient = ({
   const onSubmit = (formData: Form) => {
     startTransition(async () => {
       try {
-        const validatedField = CategoryFormSchema.safeParse(formData);
+        // const validatedField = CategoryFormSchema.safeParse(formData);
 
-        if (!validatedField.success) {
-          toast.error('ورودی نامعتبر');
-          return;
-        }
+        // if (!validatedField.success) {
+        //   toast.error('ورودی نامعتبر');
+        //   return;
+        // }
 
         if (currentCat?.id) {
           const { data, status } = await axios.post(
             `${process.env.NEXT_PUBLIC_API}/product/update-category`,
-            validatedField.data,
+            formData,
           );
 
           switch (status) {
@@ -102,7 +101,7 @@ const CategoryFormClient = ({
         } else {
           const { data, status } = await axios.post(
             `${process.env.NEXT_PUBLIC_API}/product/create-category`,
-            validatedField.data,
+            formData,
           );
 
           switch (status) {
