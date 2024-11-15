@@ -81,7 +81,7 @@ export const POST = async (req: NextRequest) => {
   }
 
   return NextResponse.json(
-    { m: 'محصول ایجاد شد', d: { id: tx.id, slug: tx.slug } },
+    { m: 'محصول بروز شد', d: { id: tx.id, slug: tx.slug } },
     { status: 201 },
   );
 };
