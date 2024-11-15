@@ -93,7 +93,11 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     buyLimit: current?.buyLimit?.toString() ?? '',
     isActive: current?.isActive ?? false,
     thumb: current?.thumb ?? '',
-    images: current?.productFile.map(({ file }) => file) ?? [],
+    images:
+      current?.productFile.map(({ file }) => ({
+        ...file,
+        state: 'submitted',
+      })) ?? [],
     cats: current?.cat.map((c) => c.catId) ?? [],
   } satisfies Form;
 
@@ -166,7 +170,7 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
           case 200:
             form.setValue('images', [
               ...form.getValues('images'),
-              ...data.images,
+              ...data.files,
             ]);
             toast.success(data.m);
             break;
@@ -180,19 +184,32 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
   const onSubmit = (formData: Form) => {
     startTransition(async () => {
       try {
-        const validatedField = ProductFormSchema.safeParse(formData);
+        // const validatedField = ProductFormSchema.safeParse(formData);
 
-        if (!validatedField.success) {
-          toast.error('ورودی نامعتبر');
-          return;
-        }
+        // if (!validatedField.success) {
+        //   toast.error('ورودی نامعتبر');
+        //   return;
+        // }
 
         if (current?.id) {
-          // update
+          const { data, status } = await axios.post(
+            `${process.env.NEXT_PUBLIC_API}/product/update-product`,
+            {
+              ...formData,
+              images: formData.images.filter((img) => img.state === 'new'),
+            },
+          );
+
+          switch (status) {
+            case 201:
+              toast.success(data.m);
+              router.push(`/control/products/${data.d.id}/${data.d.slug}`);
+              break;
+          }
         } else {
           const { data, status } = await axios.post(
             `${process.env.NEXT_PUBLIC_API}/product/create-product`,
-            validatedField.data,
+            formData,
           );
 
           switch (status) {
@@ -585,11 +602,9 @@ const ProductFormClient = ({ allCats, current }: ProductFormClientProps) => {
     </>
   );
 };
-
 export default ProductFormClient;
 
 const CatFieldTree = ({ cat, field, pending }: CatFieldTreeProps) => {
-  // const checked = field.value.includes(cat.id);
   return (
     <div>
       <div className='flex gap-2'>

@@ -34,13 +34,16 @@ export const POST = async (req: NextRequest) => {
 
   const res = (await s3MultiUpload(filesArr)) as string[];
 
-  const images = await db
+  const files = await db
     .insert(FileTable)
     .values(res.map((url) => ({ url })))
     .returning();
 
   return NextResponse.json(
-    { m: 'آپلود با موفقیت به اتمام رسید', images },
+    {
+      m: 'آپلود با موفقیت به اتمام رسید',
+      files: files.map((f) => ({ ...f, state: 'new' })),
+    },
     { status: 200 },
   );
 };

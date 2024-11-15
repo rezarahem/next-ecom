@@ -83,6 +83,7 @@ export const ProductFormSchema = z
       .object({
         id: z.number(),
         url: z.string(),
+        state: z.string(),
       })
       .array(),
     cats: z.number().array(),
