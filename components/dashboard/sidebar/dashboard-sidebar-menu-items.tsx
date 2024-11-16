@@ -20,7 +20,7 @@ const MenuItems: DashboardSidebarMenuItemsTypes[] = [
     label: 'محصولات',
     icon: <PackageSearch />,
     access: ['admin'],
-    activeLabel: 'products',
+    activeLabel: '',
     children: [
       {
         id: 1,
@@ -32,9 +32,9 @@ const MenuItems: DashboardSidebarMenuItemsTypes[] = [
       {
         id: 2,
         label: 'دسته‌بندی',
-        address: '/control/products/categories',
+        address: '/control/product-categories',
         access: ['admin'],
-        activeLabel: 'categories',
+        activeLabel: 'product-categories',
       },
     ],
   },
@@ -58,16 +58,17 @@ const MenuItems: DashboardSidebarMenuItemsTypes[] = [
 
 const dashboardMenus = (
   menuItems: DashboardSidebarMenuItemsTypes[],
-  userAccess: string | undefined
+  userAccess: string | undefined,
 ): DashboardSidebarMenuItemsTypes[] => {
   return menuItems
-    .filter(item => item.access.includes(userAccess as Access))
-    .map(item => ({
+    .filter((item) => item.access.includes(userAccess as Access))
+    .map((item) => ({
       ...item,
-      children:
-        item.children ? dashboardMenus(item.children, userAccess) : undefined,
+      children: item.children
+        ? dashboardMenus(item.children, userAccess)
+        : undefined,
     }))
-    .filter(item => item.children?.length || !item.children);
+    .filter((item) => item.children?.length || !item.children);
 };
 
 export const getMenu = (userAccess: string | undefined) => {

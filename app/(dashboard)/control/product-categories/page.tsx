@@ -21,7 +21,7 @@ const ProductCategories = async () => {
           <CategoryChip key={cat.id} cat={cat} />
         ))}
       </div>
-      <AddNewBtn href='/control/products/categories/new' />
+      <AddNewBtn href='/control/product-categories/new' />
     </Container>
   );
 };

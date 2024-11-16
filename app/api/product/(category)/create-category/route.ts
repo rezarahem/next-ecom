@@ -25,9 +25,13 @@ export const POST = async (req: NextRequest) => {
     .insert(Category)
     .values({
       name: verifiedFields.data.name,
+      slug: verifiedFields.data.slug,
       parentId: verifiedFields.data.parentId,
     })
     .returning();
 
-  return NextResponse.json({ m: 'دسته‌بندی ایجاد شد' }, { status: 201 });
+  return NextResponse.json(
+    { m: 'دسته‌بندی ایجاد شد', slug: cat.slug },
+    { status: 201 },
+  );
 };

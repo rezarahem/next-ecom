@@ -3,7 +3,7 @@ export {
   type CategoryType,
   getAllCats,
   getAllCatsTree,
-  getCategoryByName,
+  getCategoryBySlug,
   getCatsExcludeTree,
 } from './product/category';
 export {

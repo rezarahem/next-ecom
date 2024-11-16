@@ -66,6 +66,7 @@ const CategoryFormClient = ({
   const defaultValues = {
     id: currentCat?.id,
     name: currentCat?.name ?? '',
+    slug: currentCat?.slug.split('-').join(' ') ?? '',
     parentId: currentCat?.parentId ?? null,
   } satisfies Form;
 
@@ -77,13 +78,6 @@ const CategoryFormClient = ({
   const onSubmit = (formData: Form) => {
     startTransition(async () => {
       try {
-        // const validatedField = CategoryFormSchema.safeParse(formData);
-
-        // if (!validatedField.success) {
-        //   toast.error('ورودی نامعتبر');
-        //   return;
-        // }
-
         if (currentCat?.id) {
           const { data, status } = await axios.post(
             `${process.env.NEXT_PUBLIC_API}/product/update-category`,
@@ -93,9 +87,7 @@ const CategoryFormClient = ({
           switch (status) {
             case 200:
               toast.success(data.m);
-              router.replace(
-                `/control/products/categories/${addDash(form.getValues('name'))}`,
-              );
+              router.replace(`/control/product-categories/${data.slug}`);
               break;
           }
         } else {
@@ -103,13 +95,10 @@ const CategoryFormClient = ({
             `${process.env.NEXT_PUBLIC_API}/product/create-category`,
             formData,
           );
-
           switch (status) {
             case 201:
               toast.success(data.m);
-              router.push(
-                `/control/products/categories/${addDash(form.getValues('name'))}`,
-              );
+              router.push(`/control/product-categories/${data.slug}`);
               break;
           }
         }
@@ -179,6 +168,19 @@ const CategoryFormClient = ({
                       placeholder='نام دسته‌بندی'
                       {...field}
                     />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='slug'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>نام دسته‌بندی</FormLabel>
+                  <FormControl>
+                    <Input disabled={pending} placeholder='اسلاگ' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

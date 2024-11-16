@@ -9,12 +9,12 @@ import { useState, useTransition } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import AlertModal from '@/components/ui/alert-modal';
-import { addDash } from '@/lib/persian-string';
 
 type CategoryChipProps = {
   cat: {
     id: number;
     name: string;
+    slug: string;
     parentId: number | null;
   };
 };
@@ -25,6 +25,7 @@ const CategoryChip = ({ cat }: CategoryChipProps) => {
   const router = useRouter();
 
   const onDelete = () => {
+    setOpenAlertModal(false);
     startTransition(async () => {
       try {
         const { data, status } = await axios.post(
@@ -50,7 +51,7 @@ const CategoryChip = ({ cat }: CategoryChipProps) => {
     <div className='flex items-center gap-2 rounded-lg border p-2'>
       <div>{cat.name}</div>
       <div className='flex gap-2'>
-        <Link href={`/control/products/categories/${addDash(cat.name)}`}>
+        <Link href={`/control/products/categories/${cat.slug}`}>
           <Button disabled={pending} size='icon' variant='secondary'>
             <Pencil />
           </Button>
