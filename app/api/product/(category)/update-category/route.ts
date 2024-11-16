@@ -4,6 +4,7 @@ import { userAccess } from '@/lib/session';
 import { CategoryFormSchema } from '@/zod';
 import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 
 const roles: string[] = ['admin'];
 
@@ -32,8 +33,10 @@ export const POST = async (req: NextRequest) => {
     .where(eq(Category.id, verifiedFields.data.id))
     .returning();
 
+  revalidateTag('cat-list');
+
   return NextResponse.json(
-    { m: 'دسته‌بندی بروز شد', slug: cat.slug },
+    { m: 'دسته‌بندی بروز شد', id: cat.id },
     { status: 200 },
   );
 };

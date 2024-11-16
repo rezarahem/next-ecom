@@ -51,7 +51,7 @@ const CategoryChip = ({ cat }: CategoryChipProps) => {
     <div className='flex items-center gap-2 rounded-lg border p-2'>
       <div>{cat.name}</div>
       <div className='flex gap-2'>
-        <Link href={`/control/products/categories/${cat.slug}`}>
+        <Link href={`/control/product-categories/${cat.id}`}>
           <Button disabled={pending} size='icon' variant='secondary'>
             <Pencil />
           </Button>

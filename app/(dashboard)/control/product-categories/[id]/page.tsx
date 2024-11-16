@@ -2,21 +2,21 @@ import CategoryFormClient from '@/components/dashboard/product/category/category
 import Container from '@/components/ui/container';
 import { redirect } from 'next/navigation';
 import { userAccess } from '@/lib/session';
-import { getAllCats, getCategoryBySlug, getCatsExcludeTree } from '@/query';
+import { getAllCats, getCategoryById, getCatsExcludeTree } from '@/query';
 
 const roles: string[] = ['admin'];
 const redirectUrl = '/login?callbackUrl=/control/products/categories';
 
-type Params = Promise<{ name: string }>;
+type Params = Promise<{ id: string }>;
 
 const CategoryForm = async ({ params }: { params: Params }) => {
   const user = await userAccess(roles);
 
   if (!user) redirect(redirectUrl);
 
-  const { name } = await params;
+  const { id } = await params;
 
-  const currentCat = await getCategoryBySlug(decodeURIComponent(name));
+  const currentCat = id === 'new' ? undefined : await getCategoryById(+id);
 
   const allCats = currentCat
     ? await getCatsExcludeTree(currentCat?.id)

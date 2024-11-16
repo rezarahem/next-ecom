@@ -31,7 +31,7 @@ export const POST = async (req: NextRequest) => {
     .returning();
 
   return NextResponse.json(
-    { m: 'دسته‌بندی ایجاد شد', slug: cat.slug },
+    { m: 'دسته‌بندی ایجاد شد', id: cat.id },
     { status: 201 },
   );
 };

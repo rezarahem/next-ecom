@@ -63,6 +63,8 @@ const CategoryFormClient = ({
     : 'یک دسته‌بندی جدید بسازید';
   const action = currentCat ? 'بروزرسانی' : 'افزودن';
 
+  console.log(currentCat);
+
   const defaultValues = {
     id: currentCat?.id,
     name: currentCat?.name ?? '',
@@ -87,7 +89,7 @@ const CategoryFormClient = ({
           switch (status) {
             case 200:
               toast.success(data.m);
-              router.replace(`/control/product-categories/${data.slug}`);
+              router.replace(`/control/product-categories/${data.id}`);
               break;
           }
         } else {
@@ -98,7 +100,7 @@ const CategoryFormClient = ({
           switch (status) {
             case 201:
               toast.success(data.m);
-              router.push(`/control/product-categories/${data.slug}`);
+              router.push(`/control/product-categories/${data.id}`);
               break;
           }
         }
@@ -178,7 +180,7 @@ const CategoryFormClient = ({
               name='slug'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>نام دسته‌بندی</FormLabel>
+                  <FormLabel>اسلاگ</FormLabel>
                   <FormControl>
                     <Input disabled={pending} placeholder='اسلاگ' {...field} />
                   </FormControl>

@@ -5,6 +5,7 @@ export {
   getAllCatsTree,
   getCategoryBySlug,
   getCatsExcludeTree,
+  getCategoryById
 } from './product/category';
 export {
   type ProductBaseType,

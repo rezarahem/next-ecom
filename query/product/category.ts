@@ -48,6 +48,14 @@ export const getAllCatsTree = async (): Promise<CatTreeTypes[]> => {
   return buildTree(flat);
 };
 
+export const getCategoryById = async (
+  id: number,
+): Promise<CategoryType | undefined> => {
+  return await db.query.Category.findFirst({
+    where: eq(Category.id, id),
+  });
+};
+
 export const getCategoryBySlug = async (
   slug: string,
 ): Promise<CategoryType | undefined> => {
