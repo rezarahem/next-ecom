@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import Container from '@/components/ui/container';
-import { Separator } from '@/components/ui/separator';
 import { getProductById } from '@/query';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
