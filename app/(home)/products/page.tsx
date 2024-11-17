@@ -1,7 +1,7 @@
 import ProductList from '@/components/home/product-list';
 import Container from '@/components/ui/container';
 
-const Product = async () => {
+const Products = async () => {
   return (
     <Container defaultPY>
       <ProductList />
@@ -9,4 +9,4 @@ const Product = async () => {
   );
 };
 
-export default Product;
+export default Products;
