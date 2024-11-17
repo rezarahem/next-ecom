@@ -10,5 +10,7 @@ export {
 export {
   type ProductBaseType,
   type ProductType,
+  type ProductTypesWithImage,
   getProductById,
+  getAllProducts
 } from './product/product';

@@ -1,8 +1,19 @@
+import 'server-only';
 import { Product } from '@/drizzle';
 import { db } from '@/drizzle/db';
 import { eq } from 'drizzle-orm';
 
 export type ProductBaseType = typeof Product.$inferSelect;
+
+export type ProductTypesWithImage = ProductBaseType & {
+  productFile: {
+    file: {
+      id: number;
+      url: string;
+    };
+  }[];
+};
+
 export type ProductType = ProductBaseType & {
   cat: { catId: number }[];
   productFile: {
@@ -22,6 +33,33 @@ export const getProductById = async (id: number) => {
           catId: true,
         },
       },
+      productFile: {
+        columns: {},
+        with: {
+          file: true,
+        },
+      },
+    },
+  });
+};
+
+export const getAllProducts = async () => {
+  return await db.query.Product.findMany({
+    with: {
+      productFile: {
+        columns: {},
+        with: {
+          file: true,
+        },
+      },
+    },
+  });
+};
+
+export const getAllActiveProducts = async () => {
+  return await db.query.Product.findMany({
+    where: eq(Product.isActive, true),
+    with: {
       productFile: {
         columns: {},
         with: {

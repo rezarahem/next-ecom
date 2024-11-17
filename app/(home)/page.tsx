@@ -1,5 +1,5 @@
 const HomePage = async () => {
-  return <div>test</div>;
+  return <div>home</div>;
 };
 
 export default HomePage;
