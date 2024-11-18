@@ -95,32 +95,32 @@ export const CartProvider = ({ children }: Props) => {
     }
   }, [setProductState, cartId, productState]);
 
-  const value = useMemo(
-    () => ({
-      cartId,
-      userId,
-      price,
-      specialPrice,
-      cartPending,
-      isMounted,
-      courses: courseState,
-      addCourse,
-      removeCourse,
-      clearCart,
-    }),
-    [
-      courseState,
-      cartId,
-      cartPending,
-      isMounted,
-      price,
-      specialPrice,
-      userId,
-      addCourse,
-      clearCart,
-      removeCourse,
-    ],
-  );
+  // const value = useMemo(
+  //   () => ({
+  //     cartId,
+  //     userId,
+  //     price,
+  //     specialPrice,
+  //     cartPending,
+  //     isMounted,
+  //     courses: courseState,
+  //     addCourse,
+  //     removeCourse,
+  //     clearCart,
+  //   }),
+  //   [
+  //     courseState,
+  //     cartId,
+  //     cartPending,
+  //     isMounted,
+  //     price,
+  //     specialPrice,
+  //     userId,
+  //     addCourse,
+  //     clearCart,
+  //     removeCourse,
+  //   ],
+  // );
 
-  return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>;
+  // return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>;
 };

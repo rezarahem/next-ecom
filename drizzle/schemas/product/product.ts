@@ -10,6 +10,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { ProductFile } from './product-file';
 import { ProductCat } from './product-cat';
+import { CartItem } from '@/drizzle';
 
 export const Product = pgTable('product', {
   id: serial('id').primaryKey(),
@@ -27,4 +28,5 @@ export const Product = pgTable('product', {
 export const ProductRel = relations(Product, ({ one, many }) => ({
   productFile: many(ProductFile),
   cat: many(ProductCat),
+  cartItem: many(CartItem),
 }));
