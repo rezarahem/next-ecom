@@ -1,4 +1,4 @@
-import { Cart, Product } from '@/drizzle';
+import { Product, User } from '@/drizzle';
 import { relations } from 'drizzle-orm';
 import { integer, pgTable, primaryKey } from 'drizzle-orm/pg-core';
 
@@ -8,18 +8,18 @@ export const CartItem = pgTable(
     productId: integer('product_id')
       .notNull()
       .references(() => Product.id, { onDelete: 'cascade' }),
-    cartId: integer('card_id')
+    userId: integer('card_id')
       .notNull()
-      .references(() => Cart.id, { onDelete: 'cascade' }),
+      .references(() => User.id, { onDelete: 'cascade' }),
     inventory: integer('inventory').notNull(),
   },
-  (t) => ({ pk: primaryKey({ columns: [t.productId, t.cartId] }) }),
+  (t) => ({ pk: primaryKey({ columns: [t.productId, t.userId] }) }),
 );
 
 export const CartItemRel = relations(CartItem, ({ one, many }) => ({
-  cart: one(Cart, {
-    fields: [CartItem.cartId],
-    references: [Cart.id],
+  user: one(User, {
+    fields: [CartItem.userId],
+    references: [User.id],
   }),
   product: one(Product, {
     fields: [CartItem.productId],

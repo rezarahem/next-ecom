@@ -1,5 +1,6 @@
+import { CartItem } from '@/drizzle';
+import { relations } from 'drizzle-orm';
 import {
-  index,
   pgTable,
   serial,
   uniqueIndex,
@@ -18,7 +19,11 @@ export const User = pgTable(
     lastOtpAttempt: varchar({ length: 50 }),
     role: varchar({ length: 24 }).notNull().default('user'),
   },
-  t => ({
+  (t) => ({
     sessionIdIndex: uniqueIndex().on(t.id, t.sessionId),
-  })
+  }),
 );
+
+export const UserRel = relations(User, ({ one, many }) => ({
+  cartItem: many(CartItem),
+}));
